@@ -101,6 +101,24 @@ The fastest way to try coscar-OS is to grab the pre-built binary for your OS fro
   - Arch users may need `fuse2`: `sudo pacman -S fuse2`. Alternative without FUSE: `./coscar-OS-*.AppImage --appimage-extract-and-run`.
 - **Android:** `coscar-OS-<version>-android-arm64-v8a.apk` — sideload (the released APK uses a per-build keystore, so updates require uninstalling the previous version).
 
+### One-line source install
+
+Until the first release installer is published, the easiest cross-platform install is to clone the repository and let `setup.py` create the virtual environment and install dependencies:
+
+**Windows PowerShell**
+
+```powershell
+if (!(Test-Path coscar-OS)) { git clone https://github.com/EpicNori/coscar-OS.git }; Set-Location coscar-OS; py setup.py
+```
+
+**macOS / Linux**
+
+```bash
+[ -d coscar-OS ] || git clone https://github.com/EpicNori/coscar-OS.git; cd coscar-OS && python3 setup.py
+```
+
+The setup process may ask for administrator access on Linux to install Qt and display dependencies. Use `--no-run` at the end if you want to install without launching the app.
+
 If you'd rather build it yourself, hack on the code, or run from a checkout, keep reading.
 
 ## Building from source
