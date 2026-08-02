@@ -25,7 +25,7 @@ User instructions for v0.9 (to be added to README):
 2. Log into <https://youtube.com> in that browser.
 3. Click the extension → **Export → cookies.txt**.
 4. Save it as `youtube_cookies.txt` in the **Downloads** folder.
-5. Restart OCTAVE — downloads will use the cookies on every attempt.
+5. Restart coscar-OS — downloads will use the cookies on every attempt.
 
 ## Why a follow-up TODO
 

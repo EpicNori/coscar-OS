@@ -83,7 +83,7 @@ Item {
                 ]
             case "deviceSettings":
                 return [
-                    { label: "Name", value: settingsManager.deviceName || "OCTAVE" }
+                    { label: "Name", value: settingsManager.deviceName || "coscar-OS" }
                 ]
             default:
                 return []

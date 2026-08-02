@@ -1,5 +1,5 @@
 """
-Network Manager for OCTAVE
+Network Manager for coscar-OS
 Handles WiFi/internet connectivity status and checks for updates via GitHub.
 """
 
@@ -46,7 +46,7 @@ class NetworkManager(QObject):
     selfUpdateMessageChanged = Signal(str)  # Human-readable progress message
     canSelfUpdateChanged = Signal(bool)     # Whether git-based self-update is possible
 
-    GITHUB_REPO = "WayBetterSolutions/OCTAVE"
+    GITHUB_REPO = "EpicNori/coscar-OS"
 
     def __init__(self):
         super().__init__()
@@ -301,7 +301,7 @@ class NetworkManager(QObject):
 
             url = f"https://api.github.com/repos/{self.GITHUB_REPO}/commits/main"
             req = urllib.request.Request(url)
-            req.add_header('User-Agent', 'OCTAVE-Updater')
+            req.add_header('User-Agent', 'coscar-OS-Updater')
             resp = urllib.request.urlopen(req, timeout=10)
             data = json.loads(resp.read().decode())
 
@@ -573,7 +573,7 @@ class NetworkManager(QObject):
 
     @Slot()
     def restartApp(self):
-        """Restart the OCTAVE application (callable from QML)."""
+        """Restart the coscar-OS application (callable from QML)."""
         logger.info("App restart requested")
 
         from PySide6.QtWidgets import QApplication
@@ -615,7 +615,7 @@ class NetworkManager(QObject):
 
     @Slot()
     def shutdown_device(self):
-        """Shut down the device cleanly: quit OCTAVE, then power off the OS."""
+        """Shut down the device cleanly: quit coscar-OS, then power off the OS."""
         system = platform.system()
         logger.info(f"Device shutdown requested on {system}")
 

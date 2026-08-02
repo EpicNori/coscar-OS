@@ -1,5 +1,5 @@
 """
-MusicDL — OCTAVE's music download engine (forked from spotdl).
+MusicDL — coscar-OS's music download engine (forked from spotdl).
 Provides search and download capabilities using Spotify metadata + YouTube audio.
 """
 
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 class MusicDL:
     """
-    Main entry point for OCTAVE's music download engine.
+    Main entry point for coscar-OS's music download engine.
 
     Usage:
         from backend.music_dl import MusicDL

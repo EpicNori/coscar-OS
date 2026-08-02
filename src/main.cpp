@@ -51,8 +51,8 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    app.setOrganizationName("OCTAVE");
-    app.setApplicationName("OCTAVE");
+    app.setOrganizationName("coscar-OS");
+    app.setApplicationName("coscar-OS");
 
     // Force Qt Quick Controls to Basic style (matches Python version —
     // required for full Slider customization)

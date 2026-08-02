@@ -1,5 +1,5 @@
 /**
- * OCTAVE Wiki — Sidebar Navigation
+ * coscar-OS Wiki — Sidebar Navigation
  * Injects the navigation into every page and highlights the current page.
  */
 (function () {
@@ -63,7 +63,7 @@
   let html = `
     <div class="sidebar-header">
       <a href="index.html" class="sidebar-logo">
-        OCTAVE <span class="logo-accent">wiki</span>
+        coscar-OS <span class="logo-accent">wiki</span>
       </a>
     </div>
   `;

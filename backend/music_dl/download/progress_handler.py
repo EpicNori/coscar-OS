@@ -1,5 +1,5 @@
 """
-Callback-based progress handler for OCTAVE music_dl.
+Callback-based progress handler for coscar-OS music_dl.
 Replaces the Rich TUI-based progress handler from spotdl.
 """
 

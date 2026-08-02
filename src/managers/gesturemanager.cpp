@@ -1,5 +1,5 @@
 /*
- * Gesture Manager for OCTAVE (C++ port)
+ * Gesture Manager for coscar-OS (C++ port)
  * PAJ7620U2 I2C gesture sensor — detects hand gestures for touchless control.
  *
  * Gesture protocol (I2C at 0x73):

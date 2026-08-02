@@ -45,7 +45,7 @@ def download_file(url: str, dest: Path) -> None:
     # Create a request with a user agent
     request = urllib.request.Request(
         url,
-        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) OCTAVE/1.0"}
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) coscar-OS/1.0"}
     )
 
     with urllib.request.urlopen(request) as response:

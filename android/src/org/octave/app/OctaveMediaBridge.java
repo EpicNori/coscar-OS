@@ -1,5 +1,5 @@
 /*
- * OCTAVE Android media bridge.
+ * coscar-OS Android media bridge.
  *
  * Exposes synchronous Java methods to the C++ backend (via QJniObject) for:
  *   - yt-dlp search + download (junkfood02/youtubedl-android 0.18.1)
@@ -208,7 +208,7 @@ public class OctaveMediaBridge {
     public static String runYtDlp(String[] args) {
         if (!ytInitialized) {
             lastExitCode = -1;
-            return "[OCTAVE] yt-dlp not initialized";
+            return "[coscar-OS] yt-dlp not initialized";
         }
         currentProgress = 0.0f;
         currentEta = 0;
@@ -258,7 +258,7 @@ public class OctaveMediaBridge {
         } catch (Throwable t) {
             lastExitCode = -2;
             Log.e(TAG, "yt-dlp execute failed", t);
-            return "[OCTAVE] yt-dlp error: " + t.getMessage();
+            return "[coscar-OS] yt-dlp error: " + t.getMessage();
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Embedded DHU Item for OCTAVE (C++ port)
+ * Embedded DHU Item for coscar-OS (C++ port)
  *
  * Connects to AndroidAutoManager, listens for dhuWindowReady /
  * dhuEmbeddedChanged signals, and exposes a frameCounter property

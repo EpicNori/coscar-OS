@@ -1,7 +1,7 @@
 """
 DownloadManager — QObject manager for music downloads in OCTAVE.
 Uses music_dl (forked spotdl) for Spotify metadata + YouTube audio downloading.
-Follows the standard OCTAVE manager pattern with ThreadPoolExecutor + QTimer polling.
+Follows the standard coscar-OS manager pattern with ThreadPoolExecutor + QTimer polling.
 """
 
 import json

@@ -1,5 +1,5 @@
 """
-Spotify Connect Manager for OCTAVE
+Spotify Connect Manager for coscar-OS
 Controls Spotify playback on connected devices (phone, desktop, etc.)
 """
 

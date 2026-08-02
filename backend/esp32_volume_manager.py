@@ -1,5 +1,5 @@
 """
-ESP32 Volume Manager for OCTAVE
+ESP32 Volume Manager for coscar-OS
 Handles USB Serial connection to ESP32-S3 receiver dongle for volume control.
 The ESP32-S3 receives commands from a remote ESP32 encoder via ESP-NOW.
 """

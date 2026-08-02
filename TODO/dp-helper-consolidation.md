@@ -19,7 +19,7 @@ duplication exists purely to dodge a historical **Qt bug where JS functions on a
 QML singleton failed/returned undefined on Android**.
 
 It's a real maintainability win to collapse 59 copies into one call site — but the
-bug is **Android-specific and can't be verified from a desktop checkout**, and OCTAVE
+bug is **Android-specific and can't be verified from a desktop checkout**, and coscar-OS
 ships an Android APK. If the bug still bites and we consolidate, **every screen's
 pixel scaling breaks on Android**. So this must not be done blind.
 
@@ -28,7 +28,7 @@ pixel scaling breaks on Android**. So this must not be done blind.
 `frontend/gauges/LinearGauge.qml` already calls `App.Spacing.dp(...)` directly
 (many times) rather than using a local copy — and ships. If LinearGauge scales
 correctly on an Android device, that's strong evidence the singleton-function bug
-is fixed in the Qt version OCTAVE builds against.
+is fixed in the Qt version coscar-OS builds against.
 
 ## Verification prerequisite (do this first)
 

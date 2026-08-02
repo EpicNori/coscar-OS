@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phone Mirror &amp; Android Auto - OCTAVE Wiki</title>
+  <title>Phone Mirror &amp; Android Auto - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Phone Mirror &amp; Android Auto</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Phone Mirror &amp; Android Auto</div>
           <h1 class="page-title">Phone Mirror &amp; Android Auto</h1>
           <p class="page-subtitle">scrcpy-based phone mirroring and Google DHU-based Android Auto integration</p>
         </div>
@@ -51,7 +51,7 @@
         <section id="overview">
           <h2>Overview</h2>
           <p>
-            OCTAVE supports two methods of integrating a connected Android phone into the infotainment display:
+            coscar-OS supports two methods of integrating a connected Android phone into the infotainment display:
           </p>
           <ul>
             <li><strong>Phone Mirror</strong> -- Mirrors the entire phone screen using <a href="https://github.com/Genymobile/scrcpy">scrcpy</a>, providing full access to all phone apps</li>
@@ -59,7 +59,7 @@
           </ul>
           <p>
             Both systems use the same architectural pattern: launch an external process, capture its window
-            content, and display it within OCTAVE's QML interface via custom <code>QQuickImageProvider</code>
+            content, and display it within coscar-OS's QML interface via custom <code>QQuickImageProvider</code>
             subclasses. This avoids file I/O for frame transfer.
           </p>
           <span class="platform-badge desktop">Windows</span>
@@ -73,7 +73,7 @@
 
           <div class="diagram">
 +------------------+     USB/ADB      +------------------+
-|  Android Phone   | <--------------> |     OCTAVE       |
+|  Android Phone   | <--------------> |     coscar-OS       |
 +------------------+                  |                  |
                                       |  +-----------+   |
                           scrcpy <----|  | Phone     |   |
@@ -323,7 +323,7 @@
           <p>
             The <code>EmbeddedScrcpyItem</code> in <span class="file-path">backend/phone_mirror/embedded_widget.py</span>
             provides an alternative display method: directly embedding the scrcpy window as a child of the
-            OCTAVE Qt window using <code>SetParent</code>.
+            coscar-OS Qt window using <code>SetParent</code>.
           </p>
           <pre><code><span class="cmt"># Embedding steps:</span>
 <span class="num">1.</span> ShowWindow(hwnd, SW_HIDE)           <span class="cmt"># Hide to prevent flicker</span>
@@ -331,7 +331,7 @@
      WS_CHILD | WS_VISIBLE)             <span class="cmt">#   make child window</span>
 <span class="num">3.</span> SetWindowLongW(hwnd, GWL_EXSTYLE,   <span class="cmt"># Hide from taskbar</span>
      WS_EX_TOOLWINDOW)
-<span class="num">4.</span> SetParent(hwnd, qt_window_handle)    <span class="cmt"># Reparent into OCTAVE</span>
+<span class="num">4.</span> SetParent(hwnd, qt_window_handle)    <span class="cmt"># Reparent into coscar-OS</span>
 <span class="num">5.</span> MoveWindow(hwnd, x, y, w, h, True)  <span class="cmt"># Position within layout</span>
 <span class="num">6.</span> ShowWindow(hwnd, SW_SHOW)            <span class="cmt"># Show embedded</span></code></pre>
           <p>
@@ -436,7 +436,7 @@
           <h3>Google DHU Integration</h3>
           <p>
             Google's Desktop Head Unit (DHU) is part of the Android SDK and provides a complete Android Auto
-            head unit implementation. OCTAVE discovers it at the standard SDK path:
+            head unit implementation. coscar-OS discovers it at the standard SDK path:
           </p>
           <pre><code><span class="cmt"># SDK_PATH / extras / google / auto / desktop-head-unit[.exe]</span>
 
@@ -542,7 +542,7 @@ SetWindowPos(hwnd, <span class="num">0</span>, <span class="num">-3000</span>, <
           <p>
             The <code>EmbeddedDhuItem</code> in <span class="file-path">backend/android_auto/embedded_dhu.py</span>
             mirrors the <code>EmbeddedScrcpyItem</code> pattern -- it embeds the DHU window as a child of
-            the OCTAVE Qt window. The embedding removes decorations (caption, border, system menu,
+            the coscar-OS Qt window. The embedding removes decorations (caption, border, system menu,
             minimize/maximize boxes) and continuously repositions at ~60 FPS.
           </p>
           <p>

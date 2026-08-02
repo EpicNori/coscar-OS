@@ -1,5 +1,5 @@
 """
-Configuration module for OCTAVE music_dl (forked from spotdl).
+Configuration module for coscar-OS music_dl (forked from spotdl).
 Simplified: removed web UI, hardcoded credentials, and CLI-specific config.
 """
 
@@ -45,7 +45,7 @@ class ConfigError(Exception):
 def get_music_dl_path() -> Path:
     """
     Get the path to the music_dl config folder.
-    Uses OCTAVE's backend/temp/music_dl/ for temp data,
+    Uses coscar-OS's backend/temp/music_dl/ for temp data,
     and ~/.config/music_dl/ for persistent config.
     """
     if platform.system() == "Linux":
@@ -141,7 +141,7 @@ class GlobalConfig:
         return cls.parameters.get(key, None)
 
 
-# Empty credentials — OCTAVE will provide these from SettingsManager
+# Empty credentials — coscar-OS will provide these from SettingsManager
 SPOTIFY_OPTIONS: SpotifyOptions = {
     "client_id": "",
     "client_secret": "",

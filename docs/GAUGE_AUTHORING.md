@@ -9,7 +9,7 @@ actual code, **the code wins** — update this file.
 
 ## 1. Mental model
 
-An OBD value in OCTAVE flows like this:
+An OBD value in coscar-OS flows like this:
 
 ```
 backend/obd_manager.py  ── Signal ──▶  OBDParameterModel.qml  ── paramValues[id] ──▶  your gauge
@@ -307,9 +307,9 @@ set, palette metadata, and curated editable props all come from the
 
 **Manual path.** Drop a JSON file with the same schema under the OS config dir:
 
-- Linux: `~/.config/OCTAVE/dashboards/my-board.json`
-- macOS: `~/Library/Application Support/OCTAVE/dashboards/my-board.json`
-- Windows: `%APPDATA%/OCTAVE/dashboards/my-board.json`
+- Linux: `~/.config/coscar-OS/dashboards/my-board.json`
+- macOS: `~/Library/Application Support/coscar-OS/dashboards/my-board.json`
+- Windows: `%APPDATA%/coscar-OS/dashboards/my-board.json`
 
 The app re-scans when `DashboardManager.refresh()` is called; for a hand-dropped
 file, restart the app or call `dashboardManager.refresh()` from QML.
@@ -503,9 +503,9 @@ src/managers/
 ```
 
 User dashboards (outside the repo) live at:
-- Linux: `~/.config/OCTAVE/dashboards/*.json`
-- macOS: `~/Library/Application Support/OCTAVE/dashboards/*.json`
-- Windows: `%APPDATA%/OCTAVE/dashboards/*.json`
+- Linux: `~/.config/coscar-OS/dashboards/*.json`
+- macOS: `~/Library/Application Support/coscar-OS/dashboards/*.json`
+- Windows: `%APPDATA%/coscar-OS/dashboards/*.json`
 
 When a dashboard/gauge change is merged, update `wiki/gauges-dashboards.html`
 and re-run `python wiki/build_search_index.py`.

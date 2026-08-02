@@ -1,5 +1,5 @@
 /*
- * Embedded DHU Item for OCTAVE (C++ port)
+ * Embedded DHU Item for coscar-OS (C++ port)
  *
  * A QQuickItem that displays captured DHU frames from the "dhuframe"
  * image provider.  Connects to AndroidAutoManager to receive window-ready

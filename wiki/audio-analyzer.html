@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Analyzer - OCTAVE Wiki</title>
+  <title>Audio Analyzer - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Audio Analyzer</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Audio Analyzer</div>
           <h1 class="page-title">Audio Analyzer</h1>
           <p class="page-subtitle">FFT waveform visualization pipeline: audio decoding, frequency analysis, quality tiers, and the data flow from file to QML</p>
         </div>
@@ -375,7 +375,7 @@ log_indices = np.<span class="fn">clip</span>(log_indices, <span class="num">0</
 <span class="kw">except</span> <span class="cls">ImportError</span>:
     AV_AVAILABLE = <span class="kw">False</span></code></pre>
 
-        <p>If either library is missing, the analyzer silently disables itself. The <code>analyze_file()</code> slot returns immediately with a warning log. The QML visualizer receives no data and remains hidden. This means OCTAVE can run on systems without NumPy or FFmpeg without any errors or degraded experience (the visualizer simply doesn't appear).</p>
+        <p>If either library is missing, the analyzer silently disables itself. The <code>analyze_file()</code> slot returns immediately with a warning log. The QML visualizer receives no data and remains hidden. This means coscar-OS can run on systems without NumPy or FFmpeg without any errors or degraded experience (the visualizer simply doesn't appear).</p>
 
         <div class="info-box info">
           <strong>Installation:</strong> Both <code>numpy</code> and <code>av</code> (PyAV) are listed in <span class="file-path">requirements.txt</span> and installed automatically by <code>python setup.py</code>. PyAV bundles its own FFmpeg libraries, so no system FFmpeg installation is needed.

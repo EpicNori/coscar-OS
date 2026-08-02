@@ -1,5 +1,5 @@
 """
-Downloader module for OCTAVE music_dl (forked from spotdl).
+Downloader module for coscar-OS music_dl (forked from spotdl).
 Stripped of: SponsorBlock, lyrics providers, SoundCloud/BandCamp/Piped,
 archive, m3u, LRC generation, and web UI features.
 Fixed for Python 3.14 asyncio compatibility.

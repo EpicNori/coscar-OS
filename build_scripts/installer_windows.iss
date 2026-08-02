@@ -1,11 +1,11 @@
-; OCTAVE Windows Installer Script (Inno Setup)
+; coscar-OS Windows Installer Script (Inno Setup)
 ; Download Inno Setup from: https://jrsoftware.org/isdl.php
 
-#define MyAppName "OCTAVE"
+#define MyAppName "coscar-OS"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "Way Better Solutions"
-#define MyAppURL "https://github.com/waybettersolutions/octave"
-#define MyAppExeName "OCTAVE.exe"
+#define MyAppPublisher "coscar-OS contributors (based on OCTAVE by RobDeGeorge)"
+#define MyAppURL "https://github.com/EpicNori/coscar-OS"
+#define MyAppExeName "coscar-OS.exe"
 
 [Setup]
 ; Unique identifier for this application
@@ -22,7 +22,7 @@ DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 ; Output settings
 OutputDir=..\dist
-OutputBaseFilename=OCTAVE-{#MyAppVersion}-windows-x86_64
+OutputBaseFilename=coscar-OS-{#MyAppVersion}-windows-x86_64
 ; Compression
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -47,7 +47,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 ; Main application files
-Source: "..\dist\OCTAVE\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\dist\coscar-OS\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -61,7 +61,7 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 
 [UninstallDelete]
 ; Clean up user data on uninstall (optional - remove if you want to preserve settings)
-Type: filesandordirs; Name: "{userappdata}\OCTAVE"
+Type: filesandordirs; Name: "{userappdata}\coscar-OS"
 
 [Code]
 // Check for Visual C++ Redistributable

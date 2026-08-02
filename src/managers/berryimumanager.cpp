@@ -1,5 +1,5 @@
 /*
- * BerryIMU v3 Manager for OCTAVE (C++ port)
+ * BerryIMU v3 Manager for coscar-OS (C++ port)
  * Reads accelerometer, gyroscope, magnetometer, and barometer data
  * via I2C and emits signals to QML for the CarMenu 3D model and gauges.
  *

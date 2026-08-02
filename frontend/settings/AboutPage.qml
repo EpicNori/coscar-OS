@@ -35,7 +35,7 @@ Flickable {
 
                 Text {
                     id: glowText
-                    text: "OCTAVE"
+                    text: "coscar-OS"
                     font.pixelSize: App.Spacing.overallText * 5
                     font.family: App.Style.fontFamily
                     font.bold: true
@@ -54,7 +54,7 @@ Flickable {
 
                 Text {
                     id: titleText
-                    text: "OCTAVE"
+                    text: "coscar-OS"
                     font.pixelSize: App.Spacing.overallText * 5
                     font.family: App.Style.fontFamily
                     font.bold: true
@@ -439,7 +439,9 @@ Flickable {
 
             Text {
                 id: descriptionText
-                text: "Welcome to OCTAVE, an open-source, cross-platform telematics system for an augmented vehicle experience. Developed by Way Better Solutions, our mission is simple: we make things better.
+                text: "Welcome to coscar-OS, an open-source, cross-platform telematics system for an augmented vehicle experience.
+
+coscar-OS is a redesign and continuation of the open-source OCTAVE project, originally created by RobDeGeorge: github.com/RobDeGeorge/OCTAVE.
 
 This software is designed to provide a seamless interface for vehicle systems, media playback, navigation, and more."
                 wrapMode: Text.WordWrap
@@ -468,7 +470,7 @@ This software is designed to provide a seamless interface for vehicle systems, m
             }
 
             Text {
-                text: "<a href='https://github.com/WayBetterSolutions/OCTAVE'>github.com/WayBetterSolutions/OCTAVE</a>"
+                text: "<a href='https://github.com/EpicNori/coscar-OS'>github.com/EpicNori/coscar-OS</a>"
                 color: App.Style.accent
                 linkColor: App.Style.accent
                 font.pixelSize: App.Spacing.overallText

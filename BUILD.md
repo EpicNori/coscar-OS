@@ -1,6 +1,6 @@
-# OCTAVE Build Guide
+# coscar-OS Build Guide
 
-OCTAVE ships as a **C++ / Qt 6** application. Every distributed binary — `.exe`, `.dmg`, `.AppImage`, `.apk`, and (planned) `.ipa` — is built from `src/` via CMake. The Python tree in `backend/` is a developer/tinkerer backend, not a distribution path.
+coscar-OS ships as a **C++ / Qt 6** application. Every distributed binary — `.exe`, `.dmg`, `.AppImage`, `.apk`, and (planned) `.ipa` — is built from `src/` via CMake. The Python tree in `backend/` is a developer/tinkerer backend, not a distribution path.
 
 This guide covers:
 
@@ -61,7 +61,7 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
 ```
 
-Outputs: `build/octave`. CI packages this into a portable `OCTAVE-<version>-x86_64.AppImage` via `packaging/linux/build-appimage.sh` (see [CI parity](#ci-parity)) — no local installer needed for development.
+Outputs: `build/octave`. CI packages this into a portable `coscar-OS-<version>-x86_64.AppImage` via `packaging/linux/build-appimage.sh` (see [CI parity](#ci-parity)) — no local installer needed for development.
 
 To produce an AppImage locally (matches CI's layout, but linked against your distro's glibc — only safe to run on the same distro):
 
@@ -70,7 +70,7 @@ To produce an AppImage locally (matches CI's layout, but linked against your dis
 sudo apt-get install -y libtag1-dev libfuse2 wget file
 
 bash packaging/linux/build-appimage.sh
-# -> dist/OCTAVE-<version>-x86_64.AppImage
+# -> dist/coscar-OS-<version>-x86_64.AppImage
 ```
 
 On Arch the bundled `linuxdeploy` `strip` rejects modern `.relr.dyn` ELF sections; pass `NO_STRIP=1` and expect a slightly larger artifact. AppImages built on Arch will not run on Ubuntu/Debian (newer glibc) — for distributable builds, let CI on `ubuntu-22.04` produce the AppImage.
@@ -108,7 +108,7 @@ cmake -S . -B build `
 cmake --build build --config Release -j
 ```
 
-Outputs: `build/Release/octave.exe`. CI runs `windeployqt` then `iscc.exe build_scripts/installer_windows.iss` to produce `OCTAVE_Setup_<version>.exe`.
+Outputs: `build/Release/octave.exe` (renamed to `coscar-OS.exe` for distribution). CI runs `windeployqt` then `iscc.exe build_scripts/installer_windows.iss` to produce `coscar-OS_Setup_<version>.exe`.
 
 ---
 
@@ -195,7 +195,7 @@ yes | ~/Android/Sdk/cmdline-tools/latest/bin/sdkmanager --licenses
 Add to `~/.bashrc` (or `~/.zshrc`):
 
 ```bash
-# OCTAVE Android build toolchain
+# coscar-OS Android build toolchain
 export ANDROID_HOME="$HOME/Android/Sdk"
 export ANDROID_SDK_ROOT="$ANDROID_HOME"
 export ANDROID_NDK_ROOT="$ANDROID_HOME/ndk/26.1.10909125"
@@ -230,7 +230,7 @@ cmake --build build-android --target apk -j
 adb install build-android/android-build/build/outputs/apk/debug/android-build-debug.apk
 ```
 
-If `INSTALL_FAILED_UPDATE_INCOMPATIBLE`: a release-signed APK of the same package is already installed. `adb uninstall org.OCTAVE` first.
+If `INSTALL_FAILED_UPDATE_INCOMPATIBLE`: a release-signed APK of the same package is already installed. `adb uninstall org.coscar-OS` first.
 
 ### Enabling USB debugging on devices
 
@@ -305,10 +305,10 @@ The Python backend is **never** packaged or shipped. There is no PyInstaller pip
 
 | Platform | Runner | Build command | Output |
 |---|---|---|---|
-| Windows | `windows-latest` | `cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=…/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release` then `iscc.exe build_scripts/installer_windows.iss` | `OCTAVE_Setup_<v>.exe` |
-| macOS | `macos-latest` | `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release` then `macdeployqt` + `hdiutil` | `OCTAVE.dmg` |
-| Linux | `ubuntu-22.04` | `bash packaging/linux/build-appimage.sh` (CMake Release + `linuxdeploy` + `linuxdeploy-plugin-qt`) | `OCTAVE-<v>-x86_64.AppImage` |
-| Android | `ubuntu-22.04` | `qt-cmake -S . -B build-android …` then `cmake --build build-android --target apk` | `OCTAVE.apk` |
+| Windows | `windows-latest` | `cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=…/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release` then `iscc.exe build_scripts/installer_windows.iss` | `coscar-OS_Setup_<v>.exe` |
+| macOS | `macos-latest` | `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release` then `macdeployqt` + `hdiutil` | `coscar-OS.dmg` |
+| Linux | `ubuntu-22.04` | `bash packaging/linux/build-appimage.sh` (CMake Release + `linuxdeploy` + `linuxdeploy-plugin-qt`) | `coscar-OS-<v>-x86_64.AppImage` |
+| Android | `ubuntu-22.04` | `qt-cmake -S . -B build-android …` then `cmake --build build-android --target apk` | `coscar-OS.apk` |
 
 **Pinned versions** (matched locally for parity):
 

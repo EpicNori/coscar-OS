@@ -860,7 +860,7 @@ class OBDManager(QObject):
 
     def _get_all_commands(self):
         """Return dict of all supported OBD commands with their callbacks.
-        This is the master list of parameters OCTAVE can monitor."""
+        This is the master list of parameters coscar-OS can monitor."""
         return {
             # Original 18 parameters
             "COOLANT_TEMP": (obd.commands.COOLANT_TEMP, self._update_coolant),
@@ -1735,7 +1735,7 @@ class OBDManager(QObject):
 
     @Slot(result=list)
     def get_all_parameter_names(self):
-        """Get list of all parameter names that OCTAVE supports"""
+        """Get list of all parameter names that coscar-OS supports"""
         return list(self._get_all_commands().keys())
 
     @Slot(result=list)

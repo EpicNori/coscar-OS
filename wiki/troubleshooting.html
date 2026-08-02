@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Troubleshooting - OCTAVE Wiki</title>
+  <title>Troubleshooting - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Troubleshooting</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Troubleshooting</div>
           <h1 class="page-title">Troubleshooting</h1>
           <p class="page-subtitle">Common issues, platform-specific fixes, log file analysis, and debugging techniques.</p>
         </div>
@@ -50,7 +50,7 @@
         <table>
           <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
           <tbody>
-            <tr><td>"App is damaged" Gatekeeper error</td><td><code>xattr -cr /Applications/OCTAVE.app</code> or <code>sudo spctl --master-disable</code></td></tr>
+            <tr><td>"App is damaged" Gatekeeper error</td><td><code>xattr -cr /Applications/coscar-OS.app</code> or <code>sudo spctl --master-disable</code></td></tr>
             <tr><td>PySide6 import errors on ARM Mac</td><td>Ensure using native ARM Python, not Rosetta x86. Check with <code>python -c "import platform; print(platform.machine())"</code></td></tr>
             <tr><td><code>keyring</code> fails</td><td>Grant terminal access to Keychain in System Settings > Privacy</td></tr>
           </tbody>
@@ -63,8 +63,8 @@
             <tr><td>Missing <code>libxcb</code> libraries</td><td><code>sudo apt install libxcb-xinerama0 libxcb-cursor0 libxkbcommon0</code></td></tr>
             <tr><td><code>libGL</code> errors</td><td><code>sudo apt install libgl1-mesa-glx libegl1</code></td></tr>
             <tr><td><code>smbus2</code> install fails</td><td><code>sudo apt install python3-dev i2c-tools</code></td></tr>
-            <tr><td>AppImage won't run</td><td><code>chmod +x OCTAVE-x86_64.AppImage</code> or install libfuse2: <code>sudo apt install libfuse2</code></td></tr>
-            <tr><td>AppImage FUSE not available</td><td>Extract: <code>./OCTAVE-x86_64.AppImage --appimage-extract && ./squashfs-root/AppRun</code></td></tr>
+            <tr><td>AppImage won't run</td><td><code>chmod +x coscar-OS-x86_64.AppImage</code> or install libfuse2: <code>sudo apt install libfuse2</code></td></tr>
+            <tr><td>AppImage FUSE not available</td><td>Extract: <code>./coscar-OS-x86_64.AppImage --appimage-extract && ./squashfs-root/AppRun</code></td></tr>
           </tbody>
         </table>
 
@@ -81,7 +81,7 @@
   libxcb-render-util0 libxcb-shape0</code></pre>
 
         <h3>Wayland vs X11</h3>
-        <p>OCTAVE uses Qt Quick which works on both Wayland and X11. If you experience issues on Wayland:</p>
+        <p>coscar-OS uses Qt Quick which works on both Wayland and X11. If you experience issues on Wayland:</p>
         <pre><code><span class="cmt"># Force X11 backend</span>
 <span class="kw">export</span> QT_QPA_PLATFORM=xcb
 <span class="fn">python</span> main.py
@@ -102,8 +102,8 @@
 
         <h3>Black Screen on Startup</h3>
         <ul>
-          <li>Check QML import path: OCTAVE adds <code>frontend/</code> to the QML import path. If running from a different directory, QML files won't be found.</li>
-          <li>Check Qt Quick Controls style: OCTAVE forces <code>QT_QUICK_CONTROLS_STYLE=Basic</code>. If this env var is overridden, slider customization breaks.</li>
+          <li>Check QML import path: coscar-OS adds <code>frontend/</code> to the QML import path. If running from a different directory, QML files won't be found.</li>
+          <li>Check Qt Quick Controls style: coscar-OS forces <code>QT_QUICK_CONTROLS_STYLE=Basic</code>. If this env var is overridden, slider customization breaks.</li>
           <li>Run with <code>--debug</code> and check logs for QML errors.</li>
         </ul>
 
@@ -115,7 +115,7 @@
 
         <h3>No Audio Output</h3>
         <ul>
-          <li>Check volume: OCTAVE uses a logarithmic curve <code>(volume/100)^2.0</code>. Low slider values produce very quiet output.</li>
+          <li>Check volume: coscar-OS uses a logarithmic curve <code>(volume/100)^2.0</code>. Low slider values produce very quiet output.</li>
           <li>Check mute state: <code>mediaManager.is_muted()</code> in QML or check the mute toggle guard (<code>_mute_toggle_locked</code>).</li>
           <li>Verify audio output device in system settings.</li>
         </ul>
@@ -188,10 +188,10 @@ ls -la /dev/rfcomm0</code></pre>
         <h3>OAuth Flow</h3>
         <ol class="steps">
           <li>Enter Client ID and Client Secret in Spotify Settings</li>
-          <li>Click "Connect" - OCTAVE starts a local HTTP server on port 8888</li>
+          <li>Click "Connect" - coscar-OS starts a local HTTP server on port 8888</li>
           <li>Browser opens to Spotify's auth page</li>
           <li>After authorizing, Spotify redirects to <code>http://127.0.0.1:8888/callback</code></li>
-          <li>OCTAVE captures the auth code and exchanges it for tokens</li>
+          <li>coscar-OS captures the auth code and exchanges it for tokens</li>
         </ol>
 
         <h3>Common Issues</h3>
@@ -199,10 +199,10 @@ ls -la /dev/rfcomm0</code></pre>
           <thead><tr><th>Problem</th><th>Solution</th></tr></thead>
           <tbody>
             <tr><td>Redirect URI mismatch</td><td>Add <code>http://127.0.0.1:8888/callback</code> to your Spotify Developer Dashboard redirect URIs</td></tr>
-            <tr><td>Token expired</td><td>OCTAVE auto-refreshes tokens via spotipy. If it fails, disconnect and re-authenticate.</td></tr>
+            <tr><td>Token expired</td><td>coscar-OS auto-refreshes tokens via spotipy. If it fails, disconnect and re-authenticate.</td></tr>
             <tr><td>Keyring errors</td><td>Install <code>keyring</code> and the appropriate backend. Falls back to file cache at <code>backend/.spotify_token_cache</code></td></tr>
-            <tr><td>No devices found</td><td>Ensure Spotify is running on at least one device (phone, desktop). OCTAVE controls playback remotely.</td></tr>
-            <tr><td>Rate limiting</td><td>OCTAVE polls every 3 seconds and uses max 2 concurrent API threads. If rate-limited, reduce polling interval.</td></tr>
+            <tr><td>No devices found</td><td>Ensure Spotify is running on at least one device (phone, desktop). coscar-OS controls playback remotely.</td></tr>
+            <tr><td>Rate limiting</td><td>coscar-OS polls every 3 seconds and uses max 2 concurrent API threads. If rate-limited, reduce polling interval.</td></tr>
           </tbody>
         </table>
 
@@ -227,7 +227,7 @@ i2cdetect -y 2
         <table>
           <thead><tr><th>Error</th><th>Cause</th><th>Solution</th></tr></thead>
           <tbody>
-            <tr><td><code>/dev/i2c-2 not found</code></td><td>I2C bus not enabled or wrong bus number</td><td>Enable I2C in raspi-config. OCTAVE uses bus 2 by default.</td></tr>
+            <tr><td><code>/dev/i2c-2 not found</code></td><td>I2C bus not enabled or wrong bus number</td><td>Enable I2C in raspi-config. coscar-OS uses bus 2 by default.</td></tr>
             <tr><td>Permission denied on <code>/dev/i2c-2</code></td><td>User not in i2c group</td><td><code>sudo usermod -aG i2c $USER</code> then log out/in</td></tr>
             <tr><td>Expected chip ID 0x7620, got 0x0000</td><td>PAJ7620U2 not responding</td><td>Check wiring, verify 3.3V power, check I2C pull-up resistors</td></tr>
             <tr><td>smbus2 not installed</td><td>Python I2C library missing</td><td><code>pip install smbus2</code></td></tr>
@@ -241,7 +241,7 @@ i2cdetect -y 2
         <ul>
           <li>Check that the ESP32-S3 dongle appears in <code>dmesg</code> output after plugging in</li>
           <li>Verify serial port permissions: <code>sudo usermod -aG dialout $USER</code></li>
-          <li>Check that the OBD port and ESP32 port are different (OCTAVE filters out the OBD port)</li>
+          <li>Check that the OBD port and ESP32 port are different (coscar-OS filters out the OBD port)</li>
           <li>Try manual port selection in Volume Knob settings if auto-detection fails</li>
           <li>Check baud rate: must be 115200</li>
         </ul>
@@ -253,10 +253,10 @@ i2cdetect -y 2
         <table>
           <thead><tr><th>Platform</th><th>Path</th></tr></thead>
           <tbody>
-            <tr><td>Windows</td><td><code>%APPDATA%\OCTAVE\logs\</code></td></tr>
-            <tr><td>macOS</td><td><code>~/Library/Application Support/OCTAVE/logs/</code></td></tr>
-            <tr><td>Linux</td><td><code>~/.config/OCTAVE/logs/</code></td></tr>
-            <tr><td>Android</td><td><code>&lt;cwd&gt;/OCTAVE/logs/</code></td></tr>
+            <tr><td>Windows</td><td><code>%APPDATA%\coscar-OS\logs\</code></td></tr>
+            <tr><td>macOS</td><td><code>~/Library/Application Support/coscar-OS/logs/</code></td></tr>
+            <tr><td>Linux</td><td><code>~/.config/coscar-OS/logs/</code></td></tr>
+            <tr><td>Android</td><td><code>&lt;cwd&gt;/coscar-OS/logs/</code></td></tr>
           </tbody>
         </table>
 
@@ -336,9 +336,9 @@ octave.app        <span class="cmt">- Main application</span></code></pre>
         <h3>File Paths</h3>
         <p>Android uses different data paths detected via <span class="file-path">backend/platform_config.py</span>:</p>
         <ul>
-          <li>Settings: <code>&lt;cwd&gt;/OCTAVE/settingsConfigure.json</code></li>
+          <li>Settings: <code>&lt;cwd&gt;/coscar-OS/settingsConfigure.json</code></li>
           <li>Music: <code>/sdcard/Music</code> (requires storage permission)</li>
-          <li>Logs: <code>&lt;cwd&gt;/OCTAVE/logs/</code></li>
+          <li>Logs: <code>&lt;cwd&gt;/coscar-OS/logs/</code></li>
         </ul>
 
         <!-- WSL -->

@@ -1,54 +1,58 @@
 <div align="center">
 
-# OCTAVE
+# coscar-OS
 
 ### Open-source car infotainment · carputer · DIY head unit
 **Raspberry Pi · Desktop · Android — fully programmable, hackable, MIT-licensed.**
 
-<img src="frontend/assets/readme/display.gif" alt="OCTAVE in motion" width="780">
+<img src="frontend/assets/readme/display.gif" alt="coscar-OS in motion" width="780">
 
-[![Latest Release](https://img.shields.io/github/v/release/WayBetterSolutions/OCTAVE?label=latest%20release&style=for-the-badge&color=41cd52)](https://github.com/WayBetterSolutions/OCTAVE/releases/latest)
-[![Stars](https://img.shields.io/github/stars/WayBetterSolutions/OCTAVE?style=for-the-badge&color=ffb400&logo=github)](https://github.com/WayBetterSolutions/OCTAVE/stargazers)
-[![Downloads](https://img.shields.io/github/downloads/WayBetterSolutions/OCTAVE/total?style=for-the-badge&color=2b8aff&label=downloads)](https://github.com/WayBetterSolutions/OCTAVE/releases)
+[![Latest Release](https://img.shields.io/github/v/release/EpicNori/coscar-OS?label=latest%20release&style=for-the-badge&color=41cd52)](https://github.com/EpicNori/coscar-OS/releases/latest)
+[![Stars](https://img.shields.io/github/stars/EpicNori/coscar-OS?style=for-the-badge&color=ffb400&logo=github)](https://github.com/EpicNori/coscar-OS/stargazers)
+[![Downloads](https://img.shields.io/github/downloads/EpicNori/coscar-OS/total?style=for-the-badge&color=2b8aff&label=downloads)](https://github.com/EpicNori/coscar-OS/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](LICENSE)
 
 [![Platforms](https://img.shields.io/badge/platforms-Win%20%7C%20macOS%20%7C%20Linux%20%7C%20Pi%20%7C%20Android-success?style=flat-square)](#pre-built-downloads)
 [![Backend](https://img.shields.io/badge/backend-C%2B%2B%20%7C%20Python-orange?style=flat-square)](#two-backends-one-frontend--built-for-the-community)
 [![Frontend](https://img.shields.io/badge/frontend-Qt%206%20%2F%20QML-41cd52?style=flat-square)](#)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/WayBetterSolutions/OCTAVE?style=flat-square&label=commits%2Fmonth)](https://github.com/WayBetterSolutions/OCTAVE/pulse)
-[![Forks](https://img.shields.io/github/forks/WayBetterSolutions/OCTAVE?style=flat-square&color=8a4fff)](https://github.com/WayBetterSolutions/OCTAVE/network/members)
+[![Commit activity](https://img.shields.io/github/commit-activity/m/EpicNori/coscar-OS?style=flat-square&label=commits%2Fmonth)](https://github.com/EpicNori/coscar-OS/pulse)
+[![Forks](https://img.shields.io/github/forks/EpicNori/coscar-OS?style=flat-square&color=8a4fff)](https://github.com/EpicNori/coscar-OS/network/members)
 
-### [Download Latest Release →](https://github.com/WayBetterSolutions/OCTAVE/releases/latest)
+### [Download Latest Release →](https://github.com/EpicNori/coscar-OS/releases/latest)
 
 </div>
 
 ---
 
-OCTAVE is an open-source infotainment system. A carputer you actually own. Rip out your factory head unit and bolt a Raspberry Pi to your dash, run it on a laptop in a project car, or sideload it onto an Android tablet. It plays your music, talks to your car over OBD-II, and themes itself to your album art.
+coscar-OS is an open-source infotainment system. A carputer you actually own. Rip out your factory head unit and bolt a Raspberry Pi to your dash, run it on a laptop in a project car, or sideload it onto an Android tablet. It plays your music, talks to your car over OBD-II, and themes itself to your album art.
 
-If you've poked at **Crankshaft, OpenAuto Pro, or AGL** before, OCTAVE lives in the same neighborhood — closer to a hackable foundation than a polished product. Two backends ship side by side, C++/Qt and Python/PySide6, so you can fork whichever one you're already fluent in.
+If you've poked at **Crankshaft, OpenAuto Pro, or AGL** before, coscar-OS lives in the same neighborhood — closer to a hackable foundation than a polished product. Two backends ship side by side, C++/Qt and Python/PySide6, so you can fork whichever one you're already fluent in.
 
 ---
 
-## Why OCTAVE
+## Origin & Credits
+
+coscar-OS is a redesign and continuation of the open-source [OCTAVE project](https://github.com/RobDeGeorge/OCTAVE), originally created by RobDeGeorge. The original MIT license, copyright notices, and attribution requirements are preserved in [`LICENSE`](LICENSE), [`NOTICE`](NOTICE), and [`ORIGINAL-CREDITS.md`](ORIGINAL-CREDITS.md).
+
+## Why coscar-OS
 
 Stock head units age out fast. Aftermarket units lock you in. Android Auto and CarPlay are great until you want to do something the manufacturer didn't sign off on.
 
-OCTAVE is the third option: a stack you build, modify, and run on whatever hardware you want. If you've ever wanted to wire a rotary encoder to your dash, throw a custom OBD gauge on screen, or theme your UI to match your album art in real time, this is the project for you.
+coscar-OS is the third option: a stack you build, modify, and run on whatever hardware you want. If you've ever wanted to wire a rotary encoder to your dash, throw a custom OBD gauge on screen, or theme your UI to match your album art in real time, this is the project for you.
 
-It's not really a product. It's more like vanilla Minecraft — I'll keep the base build healthy and supported, but the amount of customization baked in means no two OCTAVE installs are going to look the same. Themes, dashboards, layouts, hardware bindings, gauges, sensors, the lot. And if you want to go further than the built-in knobs allow, the whole thing is yours to fork.
+It's not really a product. It's more like vanilla Minecraft — I'll keep the base build healthy and supported, but the amount of customization baked in means no two coscar-OS installs are going to look the same. Themes, dashboards, layouts, hardware bindings, gauges, sensors, the lot. And if you want to go further than the built-in knobs allow, the whole thing is yours to fork.
 
 ## Who This Is For
 
 - **The Pi tinkerer.** You've got a Raspberry Pi 4 or 5, a touchscreen, and a free weekend. You want a real infotainment stack to hack on, not a kiosk wrapped around a browser tab.
 - **The factory-head-unit refugee.** Your 2008 Civic / E46 / Tacoma / van came with something terrible (or nothing at all), and you'd rather wire a tablet into the dash than drop $900 on a double-DIN.
-- **The Android Auto / CarPlay defector.** Those are fine until you want to do something the manufacturer didn't sign off on. OCTAVE is the "do whatever you want" option.
+- **The Android Auto / CarPlay defector.** Those are fine until you want to do something the manufacturer didn't sign off on. coscar-OS is the "do whatever you want" option.
 - **The OBD-II data nerd.** You want live gauges, custom dashboards, and 50+ PIDs on screen without paying a subscription.
 - **The van-build / overlander / project-car person.** You need an interface that survives being rebuilt three times and fits hardware nobody else supports.
 
 ## How It Compares
 
-| | OCTAVE | Crankshaft | OpenAuto Pro | Stock Android Auto |
+| | coscar-OS | Crankshaft | OpenAuto Pro | Stock Android Auto |
 |---|---|---|---|---|
 | Open source | yes (MIT) | yes | partial | no |
 | Runs without a phone | yes | no (AA projection) | no (AA projection) | no |
@@ -57,7 +61,7 @@ It's not really a product. It's more like vanilla Minecraft — I'll keep the ba
 | Local music + Spotify + downloads | yes | via phone | via phone | via phone |
 | Desktop dev loop | yes (Win/macOS/Linux) | Pi only | Pi only | n/a |
 
-If you want a head unit that runs **on its own** instead of a screen that mirrors your phone, OCTAVE is the one.
+If you want a head unit that runs **on its own** instead of a screen that mirrors your phone, coscar-OS is the one.
 
 ## See It
 
@@ -87,25 +91,25 @@ If you want a head unit that runs **on its own** instead of a screen that mirror
 - 100+ user-configurable settings, all persisted to disk
 - Custom gauge primitives and dashboard system — build your own and drop them in
 
-## Get OCTAVE
+## Get coscar-OS
 
-The fastest way to try OCTAVE is to grab the pre-built binary for your OS from the [Releases](https://github.com/WayBetterSolutions/OCTAVE/releases) page and give it a spin — no toolchain, no build, no Python venv. One installer per platform:
+The fastest way to try coscar-OS is to grab the pre-built binary for your OS from the [Releases](https://github.com/EpicNori/coscar-OS/releases) page and give it a spin — no toolchain, no build, no Python venv. One installer per platform:
 
-- **Windows:** `OCTAVE-<version>-windows-x86_64.exe` — run the installer.
-- **macOS:** `OCTAVE-<version>-macos.dmg` — open, drag to Applications.
-- **Linux:** `OCTAVE-<version>-linux-x86_64.AppImage` — `chmod +x` and run. Works on Ubuntu 22.04+, Debian, Mint, Fedora, openSUSE, and Arch.
-  - Arch users may need `fuse2`: `sudo pacman -S fuse2`. Alternative without FUSE: `./OCTAVE-*.AppImage --appimage-extract-and-run`.
-- **Android:** `OCTAVE-<version>-android-arm64-v8a.apk` — sideload (the released APK uses a per-build keystore, so updates require uninstalling the previous version).
+- **Windows:** `coscar-OS-<version>-windows-x86_64.exe` — run the installer.
+- **macOS:** `coscar-OS-<version>-macos.dmg` — open, drag to Applications.
+- **Linux:** `coscar-OS-<version>-linux-x86_64.AppImage` — `chmod +x` and run. Works on Ubuntu 22.04+, Debian, Mint, Fedora, openSUSE, and Arch.
+  - Arch users may need `fuse2`: `sudo pacman -S fuse2`. Alternative without FUSE: `./coscar-OS-*.AppImage --appimage-extract-and-run`.
+- **Android:** `coscar-OS-<version>-android-arm64-v8a.apk` — sideload (the released APK uses a per-build keystore, so updates require uninstalling the previous version).
 
 If you'd rather build it yourself, hack on the code, or run from a checkout, keep reading.
 
 ## Building from source
 
-If you just want to run the app, use the pre-built download above. Building from source is for hacking on OCTAVE — the Python backend is the fastest dev loop:
+If you just want to run the app, use the pre-built download above. Building from source is for hacking on coscar-OS — the Python backend is the fastest dev loop:
 
 ```bash
-git clone https://github.com/waybettersolutions/octave.git
-cd octave
+git clone https://github.com/EpicNori/coscar-OS.git
+cd coscar-OS
 python setup.py
 ```
 
@@ -145,22 +149,22 @@ If turning off the VPN isn't an option (geo-restricted regions, privacy requirem
    - **Linux / macOS:** `~/Downloads/youtube_cookies.txt`
    - **Windows:** `%USERPROFILE%\Downloads\youtube_cookies.txt`
    - **Android:** `/storage/emulated/0/Download/youtube_cookies.txt` (visible as `Internal storage / Download / youtube_cookies.txt` in any file manager)
-5. Restart OCTAVE — every download will now use those cookies. Cookies usually stay valid for weeks.
+5. Restart coscar-OS — every download will now use those cookies. Cookies usually stay valid for weeks.
 
-OCTAVE detects the file automatically — no settings to configure. If you don't have the file, downloads still work for any video that isn't currently walled by YouTube on your network.
+coscar-OS detects the file automatically — no settings to configure. If you don't have the file, downloads still work for any video that isn't currently walled by YouTube on your network.
 
 ## Two backends, one frontend
 
 This is the part I care about most.
 
-OCTAVE ships **two parallel backends**, C++ / Qt 6 and Python / PySide6, both driving the same QML frontend. Not because the project needs both, but because **you** might. The whole reason it exists in two languages is so the next person to fork OCTAVE can pick up the side they already speak and start building.
+coscar-OS ships **two parallel backends**, C++ / Qt 6 and Python / PySide6, both driving the same QML frontend. Not because the project needs both, but because **you** might. The whole reason it exists in two languages is so the next person to fork coscar-OS can pick up the side they already speak and start building.
 
 - Love C++? `src/` is yours. Performance, app stores, mobile — that's the side that ships natively.
 - Live in Python? `backend/` is yours. Want to wire up a weird sensor on a Pi at 2am with a REPL open? Done in 20 lines.
 
 The frontend doesn't know or care which one is running. Mod whichever side you want, ship to whoever you want.
 
-You don't have to fork to make OCTAVE yours — most of the customization is just settings, themes, and dashboards you build inside the app. But if you do want to fork and ship something I'd never have thought of, the wild rigs and weird hardware ports are the part I'm most excited to see.
+You don't have to fork to make coscar-OS yours — most of the customization is just settings, themes, and dashboards you build inside the app. But if you do want to fork and ship something I'd never have thought of, the wild rigs and weird hardware ports are the part I'm most excited to see.
 
 ## System Requirements
 
@@ -182,15 +186,15 @@ The wiki covers everything — architecture, every backend manager, every fronte
 
 ## Star History
 
-<a href="https://star-history.com/#WayBetterSolutions/OCTAVE&Date">
-  <img src="https://api.star-history.com/svg?repos=WayBetterSolutions/OCTAVE&type=Date" alt="Star History Chart" width="720">
+<a href="https://star-history.com/#EpicNori/coscar-OS&Date">
+  <img src="https://api.star-history.com/svg?repos=EpicNori/coscar-OS&type=Date" alt="Star History Chart" width="720">
 </a>
 
 ## Contributing
 
 Pull requests welcome. Bug reports welcome. Hardware mods extremely welcome.
 
-If you build something cool on top of OCTAVE — a custom dashboard, a new sensor integration, a port to weirder hardware — open an issue or PR and show it off. The more wild builds out there, the better the project gets.
+If you build something cool on top of coscar-OS — a custom dashboard, a new sensor integration, a port to weirder hardware — open an issue or PR and show it off. The more wild builds out there, the better the project gets.
 
 Star the repo if you want to follow along.
 

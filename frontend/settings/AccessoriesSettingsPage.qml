@@ -497,7 +497,7 @@ Flickable {
                 }
 
                 SettingDescription {
-                    text: "Stay on while OCTAVE runs (off = sleep after 5s idle)"
+                    text: "Stay on while coscar-OS runs (off = sleep after 5s idle)"
                 }
 
                 ColumnLayout {

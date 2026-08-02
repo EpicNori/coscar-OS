@@ -1,5 +1,5 @@
 // settingsmanager.cpp — C++ port of backend/settings_manager.py
-// OCTAVE Settings Manager
+// coscar-OS Settings Manager
 
 #include "settingsmanager.h"
 
@@ -299,7 +299,7 @@ QJsonObject SettingsManager::buildDefaultSettings() const
 // ---------------------------------------------------------------------------
 QString SettingsManager::getAppDataDir()
 {
-    const QString appName = QStringLiteral("OCTAVE");
+    const QString appName = QStringLiteral("coscar-OS");
     QString dataDir;
 
 #ifdef Q_OS_WIN

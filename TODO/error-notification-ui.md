@@ -1,6 +1,6 @@
 # Error Notification UI (Parked)
 
-**Status:** Deferred. OCTAVE currently routes all errors to logs + terminal output only, by design. This document captures the plan for adding an in-app notification layer later, if and when that decision changes.
+**Status:** Deferred. coscar-OS currently routes all errors to logs + terminal output only, by design. This document captures the plan for adding an in-app notification layer later, if and when that decision changes.
 
 **Last updated:** 2026-04-11
 

@@ -2,7 +2,7 @@
 Embedded DHU Widget for QML.
 
 A QQuickItem that embeds the DHU window as a child window inside OCTAVE.
-This makes Android Auto appear seamlessly as part of the OCTAVE interface.
+This makes Android Auto appear seamlessly as part of the coscar-OS interface.
 """
 
 import platform

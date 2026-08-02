@@ -222,7 +222,7 @@ QString PhoneMirrorManager::getInstallInstructions()
         "1. Download from: https://github.com/Genymobile/scrcpy/releases\n"
         "2. Extract to C:\\scrcpy or your preferred location\n"
         "3. Set the path in Settings > Phone Mirror\n"
-        "4. Restart OCTAVE\n\n"
+        "4. Restart coscar-OS\n\n"
         "Note: scrcpy includes ADB. Enable USB debugging on your phone."
     );
 #else

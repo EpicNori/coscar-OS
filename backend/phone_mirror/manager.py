@@ -521,7 +521,7 @@ class PhoneMirrorManager(QObject):
 
     @Slot()
     def cleanup(self):
-        """Cleanup when OCTAVE is closing."""
+        """Cleanup when coscar-OS is closing."""
         self.stopScrcpy()
 
     @Slot(result=str)
@@ -533,7 +533,7 @@ class PhoneMirrorManager(QObject):
 1. Download from: https://github.com/Genymobile/scrcpy/releases
 2. Extract to C:\\scrcpy or your preferred location
 3. Set the path in Settings > Phone Mirror
-4. Restart OCTAVE
+4. Restart coscar-OS
 
 Note: scrcpy includes ADB. Enable USB debugging on your phone."""
         else:

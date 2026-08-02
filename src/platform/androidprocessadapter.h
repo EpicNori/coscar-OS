@@ -83,7 +83,7 @@ public:
             QProcess::ExitStatus st = (rc == 0) ? QProcess::NormalExit : QProcess::CrashExit;
             emit finished(rc, st);
         });
-        m_worker->setObjectName(m_tool == YtDlp ? "OCTAVE-ytdlp" : "OCTAVE-ffmpeg");
+        m_worker->setObjectName(m_tool == YtDlp ? "coscar-OS-ytdlp" : "coscar-OS-ffmpeg");
         m_worker->start();
     }
 

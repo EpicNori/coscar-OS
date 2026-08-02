@@ -336,7 +336,7 @@ class DhuCapture(QObject):
             # Restore cursor position
             user32.SetCursorPos(old_cursor.x, old_cursor.y)
 
-            # Restore focus to OCTAVE
+            # Restore focus to coscar-OS
             if old_foreground:
                 user32.SetForegroundWindow(old_foreground)
 

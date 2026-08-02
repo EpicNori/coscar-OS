@@ -1,5 +1,5 @@
 """
-Spotify client module for OCTAVE music_dl (forked from spotdl).
+Spotify client module for coscar-OS music_dl (forked from spotdl).
 Simplified: removed Singleton metaclass, uses module-level client instance.
 """
 

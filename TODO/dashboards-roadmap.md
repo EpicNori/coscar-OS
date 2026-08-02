@@ -96,9 +96,9 @@ Stop hand-writing dashboard QML files. Define dashboards as data:
 1. **`frontend/dashboards/DashboardRenderer.qml`** — single component that takes a spec (JS object) and instantiates cells into a `GridLayout` via `Qt.createComponent`. Replace all three current dashboards' hand-written QML with this + a spec.
 2. **Spec location split:**
    - Built-ins: `frontend/dashboards/presets/*.json` (read-only, shipped in the bundle)
-   - User-defined: `~/.config/OCTAVE/dashboards/*.json` on Linux (or platform equivalent via `QStandardPaths::AppConfigLocation`) — writable, survives across installs; parallels the existing `settingsConfigure.json` persistence pattern in `src/managers/settingsmanager.cpp`
+   - User-defined: `~/.config/coscar-OS/dashboards/*.json` on Linux (or platform equivalent via `QStandardPaths::AppConfigLocation`) — writable, survives across installs; parallels the existing `settingsConfigure.json` persistence pattern in `src/managers/settingsmanager.cpp`
 3. **Registry refactor in `OBDMenu.qml`:** instead of hardcoding `dashboardRegistry`, populate it from (built-in presets ∪ user dashboards). `src/managers/dashboardmanager.{h,cpp}` (C++ / Qt 6) enumerates both sources and exposes the list as a QML context property, with a parallel `backend/dashboard_manager.py` peer for the Python dev backend (dual-backend parity — see CLAUDE.md). *(shipped)*
-4. **Schema versioning:** include `"schema": 1` in every spec so the format can evolve. If `DashboardRenderer` sees a newer schema than it supports, degrade gracefully (render a "this dashboard requires a newer OCTAVE" placeholder).
+4. **Schema versioning:** include `"schema": 1` in every spec so the format can evolve. If `DashboardRenderer` sees a newer schema than it supports, degrade gracefully (render a "this dashboard requires a newer coscar-OS" placeholder).
 5. **Validation:** on load, verify every `paramId` exists in `OBDParameterModel.allParameters` and every `type` exists in a small whitelist (the primitives listed above). Skip invalid cells with a log warning rather than crashing the whole dashboard.
 6. **Keep QML fallback:** a `"source": "path/to/Custom.qml"` field lets a dashboard bypass the JSON renderer entirely when someone needs to do something the grid can't express. Retains the current hand-written option for power users.
 

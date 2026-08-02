@@ -142,7 +142,7 @@ private:
     bool m_updateCheckBusy = false;
 
     // GitHub repo for update checks
-    static constexpr const char *GITHUB_REPO = "WayBetterSolutions/OCTAVE";
+    static constexpr const char *GITHUB_REPO = "EpicNori/coscar-OS";
 };
 
 #endif // NETWORKMANAGER_H

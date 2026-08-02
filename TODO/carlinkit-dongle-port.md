@@ -5,7 +5,7 @@
 
 ## Why this is parked here
 
-OCTAVE has no CarPlay support and its Android Auto path (`src/managers/androidautomanager.{h,cpp}`) launches Google's Desktop Head Unit subprocess and screen-scrapes its window with `QScreen::grabWindow()`. That:
+coscar-OS has no CarPlay support and its Android Auto path (`src/managers/androidautomanager.{h,cpp}`) launches Google's Desktop Head Unit subprocess and screen-scrapes its window with `QScreen::grabWindow()`. That:
 
 - only works on desktop (DHU is x86_64 + needs Android SDK installed),
 - is fragile (window focus, multi-monitor, DPI scaling all break it),
@@ -53,7 +53,7 @@ Image provider name: `carplayframe` (mirrors existing `dhuframe` / `scrcpyframe`
 
 1. **Hardware** — buy a Carlinkit CPC200-CCPA. Don't start work without one; the dongle protocol can't be unit-tested without a real device + paired phone.
 2. **libusb dependency** — add `libusb-1.0` to `CMakeLists.txt` (`pkg_check_modules(LIBUSB libusb-1.0)`). Already a transitive dep on most Linux distros; needs vcpkg or homebrew formula on Windows/macOS.
-3. **H.264 decode path** — confirm QtMultimedia's `QVideoSink` can accept raw Annex-B H.264 NAL units, OR fall back to bundling `libavcodec` (FFmpeg, LGPL — same license posture as Qt itself, no licensing complication). LIVI uses GStreamer for this; for OCTAVE FFmpeg is more portable.
+3. **H.264 decode path** — confirm QtMultimedia's `QVideoSink` can accept raw Annex-B H.264 NAL units, OR fall back to bundling `libavcodec` (FFmpeg, LGPL — same license posture as Qt itself, no licensing complication). LIVI uses GStreamer for this; for coscar-OS FFmpeg is more portable.
 4. **udev rule for Linux** — the dongle needs a `/etc/udev/rules.d/99-carlinkit.rules` granting non-root access. LIVI prompts to install it on first launch via pkexec — port that UX into a new `frontend/settings/CarPlaySettingsPage.qml`. Cross-references the same pattern needed for [[esp32-volume]] hardware on Linux.
 5. **Read the Ludwig reverse-engineering writeup first** — `github.com/ludwig-v/wireless-carplay-dongle-reverse-engineering` documents the exact message types and ordering that `dongleDriver.ts` implements. Saves a week of guessing.
 
@@ -69,7 +69,7 @@ Image provider name: `carplayframe` (mirrors existing `dhuframe` / `scrcpyframe`
 
 ## Things to watch out for
 
-- **MFi compliance noise** — this is the question that always comes up. The dongle holds the MFi cert; OCTAVE talks to the dongle, not to the phone. Same legal posture as every other open-source CarPlay head-unit project on the planet. Add the same disclaimer LIVI uses (see their README) to OCTAVE's README and the in-app About page.
+- **MFi compliance noise** — this is the question that always comes up. The dongle holds the MFi cert; coscar-OS talks to the dongle, not to the phone. Same legal posture as every other open-source CarPlay head-unit project on the planet. Add the same disclaimer LIVI uses (see their README) to coscar-OS's README and the in-app About page.
 - **Android sideload (`TODO/android-cpp-port.md`)** — Android USB host mode + `UsbManager` permission flow is its own subproject. Get desktop working first; tackle Android USB after [[android-cpp-port]] Phase 4 ships.
 - **Don't add a Python peer.** USB protocol code has no place in the `backend/` Python tree — note the parity exemption in the commit message per `CLAUDE.md`.
 - **Heartbeat cadence matters.** The dongle drops the connection if heartbeats stall >2s. LIVI's `MAX_ERROR_COUNT = 5` and the `_heartbeatInterval` pattern are load-bearing — port them verbatim.

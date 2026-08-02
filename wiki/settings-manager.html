@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings Manager - OCTAVE Wiki</title>
+  <title>Settings Manager - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Settings Manager</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Settings Manager</div>
           <h1 class="page-title">Settings Manager</h1>
           <p class="page-subtitle">Central settings store with JSON persistence, Qt Property system, and dynamic registry for UI rendering</p>
         </div>
@@ -64,17 +64,17 @@
             <tr><th>Platform</th><th>Path</th></tr>
           </thead>
           <tbody>
-            <tr><td>Windows</td><td><code>%APPDATA%\OCTAVE\settingsConfigure.json</code></td></tr>
-            <tr><td>macOS</td><td><code>~/Library/Application Support/OCTAVE/settingsConfigure.json</code></td></tr>
-            <tr><td>Linux</td><td><code>~/.config/OCTAVE/settingsConfigure.json</code> (or <code>$XDG_CONFIG_HOME/OCTAVE/</code>)</td></tr>
-            <tr><td>Android</td><td><code>&lt;cwd&gt;/OCTAVE/settingsConfigure.json</code> (app-private internal storage)</td></tr>
+            <tr><td>Windows</td><td><code>%APPDATA%\coscar-OS\settingsConfigure.json</code></td></tr>
+            <tr><td>macOS</td><td><code>~/Library/Application Support/coscar-OS/settingsConfigure.json</code></td></tr>
+            <tr><td>Linux</td><td><code>~/.config/coscar-OS/settingsConfigure.json</code> (or <code>$XDG_CONFIG_HOME/coscar-OS/</code>)</td></tr>
+            <tr><td>Android</td><td><code>&lt;cwd&gt;/coscar-OS/settingsConfigure.json</code> (app-private internal storage)</td></tr>
           </tbody>
         </table>
 
         <p>The <code>get_app_data_dir()</code> function creates the directory if it does not exist:</p>
         <pre><code><span class="kw">def</span> <span class="fn">get_app_data_dir</span>():
     <span class="kw">from</span> backend.platform_config <span class="kw">import</span> IS_ANDROID
-    app_name = <span class="str">"OCTAVE"</span>
+    app_name = <span class="str">"coscar-OS"</span>
     <span class="kw">if</span> IS_ANDROID:
         data_dir = os.path.join(os.getcwd(), app_name)
     <span class="kw">elif</span> sys.platform == <span class="str">'win32'</span>:

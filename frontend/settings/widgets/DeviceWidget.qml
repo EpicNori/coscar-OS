@@ -13,7 +13,7 @@ Item {
 
         WidgetPill {
             label: "Name"
-            value: settingsManager ? (settingsManager.deviceName || "OCTAVE") : "OCTAVE"
+            value: settingsManager ? (settingsManager.deviceName || "coscar-OS") : "coscar-OS"
         }
 
         // Network status row with refresh

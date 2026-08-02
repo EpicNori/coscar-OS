@@ -1,5 +1,5 @@
 """
-OCTAVE Android Auto Module (DHU Mode)
+coscar-OS Android Auto Module (DHU Mode)
 
 This module provides Android Auto integration using Google's Desktop Head Unit (DHU).
 The DHU handles all protocol communication - we launch it, embed its window,

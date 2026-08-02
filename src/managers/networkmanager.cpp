@@ -1,5 +1,5 @@
 // networkmanager.cpp — C++ port of backend/network_manager.py
-// OCTAVE Network Manager
+// coscar-OS Network Manager
 
 #include "networkmanager.h"
 
@@ -155,7 +155,7 @@ void NetworkManager::checkForUpdates()
         // Now query GitHub API for remote HEAD
         QString url = QStringLiteral("https://api.github.com/repos/%1/commits/main").arg(QLatin1String(GITHUB_REPO));
         QNetworkRequest request{QUrl(url)};
-        request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("OCTAVE-Updater"));
+        request.setHeader(QNetworkRequest::UserAgentHeader, QStringLiteral("coscar-OS-Updater"));
         request.setTransferTimeout(10000);
 
         QNetworkReply *reply = m_nam->get(request);

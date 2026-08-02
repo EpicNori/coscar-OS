@@ -134,8 +134,8 @@ set_target_properties(octave PROPERTIES
 if(APPLE)
     set_target_properties(octave PROPERTIES
         MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_BUNDLE_NAME "OCTAVE"
-        MACOSX_BUNDLE_GUI_IDENTIFIER "com.waybettersolutions.octave"
+        MACOSX_BUNDLE_BUNDLE_NAME "coscar-OS"
+        MACOSX_BUNDLE_GUI_IDENTIFIER "io.epicnori.coscaros"
         MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
         MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
     )

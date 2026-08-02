@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Getting Started - OCTAVE Wiki</title>
+  <title>Getting Started - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
       <div class="content-inner">
 
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Getting Started</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Getting Started</div>
           <h1 class="page-title">Getting Started</h1>
           <p class="page-subtitle">
             Installation, setup, and first run on all supported platforms.
@@ -34,7 +34,7 @@
             <li><a href="#platform-macos">macOS Installation</a></li>
             <li><a href="#platform-android">Android Build</a></li>
             <li><a href="#platform-wsl">WSL Notes</a></li>
-            <li><a href="#running">Running OCTAVE</a></li>
+            <li><a href="#running">Running coscar-OS</a></li>
             <li><a href="#dev-mode">Developer Mode</a></li>
             <li><a href="#dependencies">Python Dependencies</a></li>
             <li><a href="#directory-structure">Directory Structure</a></li>
@@ -82,7 +82,7 @@
         <p>The fastest path from zero to running:</p>
 
         <pre><code><span class="cmt"># Clone the repository</span>
-git clone https://github.com/waybettersolutions/octave.git
+git clone https://github.com/EpicNori/coscar-OS.git
 cd octave
 
 <span class="cmt"># Setup and run (creates venv, installs deps, launches app)</span>
@@ -135,7 +135,7 @@ python main.py</code></pre>
           </li>
           <li>
             <strong>Launches the application</strong> &mdash; Unless <code>--no-run</code> is passed,
-            replaces the setup process with the OCTAVE app via <code>os.execv()</code>.
+            replaces the setup process with the coscar-OS app via <code>os.execv()</code>.
           </li>
         </ol>
 
@@ -206,7 +206,7 @@ sudo apt install -y python3 python3-venv python3-pip libpulse0 libasound2 \
           </li>
           <li>
             <strong>Clone and run setup</strong>:
-            <pre><code>git clone https://github.com/waybettersolutions/octave.git
+            <pre><code>git clone https://github.com/EpicNori/coscar-OS.git
 cd octave
 python setup.py</code></pre>
           </li>
@@ -225,7 +225,7 @@ python setup.py</code></pre>
           </li>
           <li>
             <strong>Clone and run setup</strong>:
-            <pre><code>git clone https://github.com/waybettersolutions/octave.git
+            <pre><code>git clone https://github.com/EpicNori/coscar-OS.git
 cd octave
 python3 setup.py</code></pre>
           </li>
@@ -322,7 +322,7 @@ cmake --build build-android -j
         <!-- WSL -->
         <h2 id="platform-wsl">WSL Notes</h2>
         <p>
-          OCTAVE can run under WSL (Windows Subsystem for Linux) but requires a display server.
+          coscar-OS can run under WSL (Windows Subsystem for Linux) but requires a display server.
           The setup script detects WSL by checking for "microsoft" in <code>/proc/version</code>.
         </p>
         <ul>
@@ -333,7 +333,7 @@ cmake --build build-android -j
           the setup script will install dependencies but skip launching.</p>
 
         <!-- Running -->
-        <h2 id="running">Running OCTAVE</h2>
+        <h2 id="running">Running coscar-OS</h2>
 
         <h3>Standard Mode</h3>
         <pre><code><span class="kw">source</span> venv/bin/activate
@@ -441,7 +441,7 @@ python -m dev.main_dev</code></pre>
         <ol class="steps">
           <li>
             <strong>Set your music directory</strong> &mdash; Open Settings and point the media library
-            to a folder containing MP3, M4A, or FLAC files. OCTAVE will scan and index them automatically.
+            to a folder containing MP3, M4A, or FLAC files. coscar-OS will scan and index them automatically.
           </li>
           <li>
             <strong>Configure Spotify</strong> (optional) &mdash; Go to Settings &gt; Spotify and enter
@@ -451,10 +451,10 @@ python -m dev.main_dev</code></pre>
           </li>
           <li>
             <strong>Connect OBD-II</strong> (optional) &mdash; Plug in an ELM327 adapter (USB or Bluetooth)
-            and OCTAVE will auto-detect it. On Linux, ensure your user is in the <code>dialout</code> group.
+            and coscar-OS will auto-detect it. On Linux, ensure your user is in the <code>dialout</code> group.
           </li>
           <li>
-            <strong>Explore Settings</strong> &mdash; OCTAVE has 100+ configurable settings across
+            <strong>Explore Settings</strong> &mdash; coscar-OS has 100+ configurable settings across
             display, media, OBD, hardware, and more. The settings pages are organized by category with
             sliders, toggles, and dropdowns.
           </li>

@@ -3,7 +3,7 @@
 
 # Multiplatform CI builds + first real release (v0.9)
 
-Wire GitHub Actions to compile OCTAVE for every supported target on every release (and a rolling nightly), so anyone can download a fresh build without cloning and compiling. Then cut **v0.9.0** as the first real public release.
+Wire GitHub Actions to compile coscar-OS for every supported target on every release (and a rolling nightly), so anyone can download a fresh build without cloning and compiling. Then cut **v0.9.0** as the first real public release.
 
 ## Why it's parked
 
@@ -18,9 +18,9 @@ The Android C++ port is still in flight (see `TODO/android-cpp-port.md` — OBD-
 - ✅ Lint (ruff) + smoke tests (pytest, headless) on every push/PR to `main`
 - ✅ Python/PyInstaller builds for Windows / macOS / Linux **on `v*` tag push only**
 - ✅ Auto-creates a GitHub Release on tag with artifacts:
-  - `OCTAVE-Windows.zip` (PyInstaller folder)
-  - `OCTAVE-macOS-App.zip` + `OCTAVE.dmg`
-  - `OCTAVE-Linux.zip` + `OCTAVE-x86_64.AppImage`
+  - `coscar-OS-Windows.zip` (PyInstaller folder)
+  - `coscar-OS-macOS-App.zip` + `coscar-OS.dmg`
+  - `coscar-OS-Linux.zip` + `coscar-OS-x86_64.AppImage`
 
 What's missing:
 

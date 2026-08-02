@@ -1,11 +1,11 @@
-# Observability overhaul — make OCTAVE post-mortem-debuggable
+# Observability overhaul — make coscar-OS post-mortem-debuggable
 
 **Status:** deferred — high priority. Ready to start. Not yet scheduled.
 **Last updated:** 2026-05-07
 
 ## Why this exists
 
-OCTAVE is a daily-driver head unit in a real Jeep. When the app crashes, an OBD adapter drops mid-drive, or the UI freezes, **the user currently cannot tell why after the fact.** The Python backend has decent rotating file logging, but Python is desktop-only — the Android sideload is C++, and the C++ build has effectively no persistent logging. This file plans the work to fix that.
+coscar-OS is a daily-driver head unit in a real Jeep. When the app crashes, an OBD adapter drops mid-drive, or the UI freezes, **the user currently cannot tell why after the fact.** The Python backend has decent rotating file logging, but Python is desktop-only — the Android sideload is C++, and the C++ build has effectively no persistent logging. This file plans the work to fix that.
 
 This is not a feature ask. This is so that real-world failures stop being unrecoverable mysteries.
 
@@ -21,7 +21,7 @@ This is not a feature ask. This is so that real-world failures stop being unreco
 | Crash handlers (both langs) | ✗ none | No `sys.excepthook`, no `threading.excepthook`, no `qInstallMessageHandler` for `qFatal`, no `signal(SIGSEGV)`, no `faulthandler`, no breakpad/crashpad. Segfaults leave no trace. |
 | QML console output | ✗ stderr only | 108 `console.log/warn/error` calls across `frontend/` go to stderr/logcat — never reach disk. |
 | Android log retrieval | ✗ broken | Logs land in `/data/data/.../files/...` private app storage. No in-app viewer, no "Share Logs" button, no `FileProvider`. Recovery requires laptop + `adb pull`. |
-| Java `OctaveOBDBridge.java` BLE state | ⚠ logcat-only | Lines 256–258 / 262–282 use `Log.i(TAG, ...)` — never reach OCTAVE's own log files. |
+| Java `OctaveOBDBridge.java` BLE state | ⚠ logcat-only | Lines 256–258 / 262–282 use `Log.i(TAG, ...)` — never reach coscar-OS's own log files. |
 | Watchdog for hung event loop | ✗ none | If Qt event loop locks for 5 seconds mid-drive, no record exists. |
 
 ## The plan
@@ -39,7 +39,7 @@ Six chunks, sequenced so each one delivers value standalone. Stop after any of t
 - Format: `[YYYY-MM-DD HH:MM:SS.zzz] [LEVEL] [category] message (file:line)` to match Python format.
 
 **Done when:**
-- A debug-build run produces `~/.config/OCTAVE/logs/octave-cpp.log` populated with messages from at least 3 different managers.
+- A debug-build run produces `~/.config/coscar-OS/logs/octave-cpp.log` populated with messages from at least 3 different managers.
 - Killing the app with `kill -9` and reopening still leaves the prior log intact.
 - Rotation triggers at 5 MB (verify by writing junk in a loop).
 
@@ -82,14 +82,14 @@ Six chunks, sequenced so each one delivers value standalone. Stop after any of t
 **Touch:**
 - New "Diagnostics" page under Settings → System (or wherever the dev/about screen lives). Shows: app version, last 100 log lines, "Share logs" + "Copy to clipboard" + "Email logs to me" buttons.
 - Android `FileProvider` declared in `AndroidManifest.xml` for the log directory so the share intent works.
-- "Email logs" auto-attaches `octave.log` + `octave-error.log` + device info (model, Android version, app version) and pre-fills subject `OCTAVE bug report — <date>`.
+- "Email logs" auto-attaches `octave.log` + `octave-error.log` + device info (model, Android version, app version) and pre-fills subject `coscar-OS bug report — <date>`.
 - Add a quick-access trigger: long-press the version label on the splash/about screen → opens diagnostics. (Discoverability without cluttering the main UI.)
 
 **Done when:** from the parked Jeep, the user can hit "Share logs" and email themselves the last 32 MB of logs without plugging anything in.
 
 **Effort:** ~1 day. Most of it is the QML page; the `FileProvider` is small.
 
-### Chunk 5 — Java BLE bridge logging into OCTAVE's log files
+### Chunk 5 — Java BLE bridge logging into coscar-OS's log files
 
 **Goal:** `OctaveOBDBridge.java` BLE state transitions show up in `octave-cpp.log`, not just logcat.
 
@@ -98,7 +98,7 @@ Six chunks, sequenced so each one delivers value standalone. Stop after any of t
 - C++ side registers the JNI method, forwards into the same logger Chunk 1 wired up.
 - Replace `Log.i(TAG, ...)` calls at the connection/disconnection/error sites (lines ~256–282) to also call the JNI method.
 
-**Done when:** an Android BLE disconnect produces a log line in OCTAVE's own log file, retrievable via Chunk 4's share button.
+**Done when:** an Android BLE disconnect produces a log line in coscar-OS's own log file, retrievable via Chunk 4's share button.
 
 **Effort:** ~3 hours.
 

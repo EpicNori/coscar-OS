@@ -1,5 +1,5 @@
 /*
- * Android Auto Manager for OCTAVE (C++ port)
+ * Android Auto Manager for coscar-OS (C++ port)
  *
  * Manages Google's Desktop Head Unit (DHU) subprocess:
  *   - Auto-detects DHU and ADB in standard Android SDK paths

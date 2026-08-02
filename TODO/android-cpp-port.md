@@ -5,7 +5,7 @@
 
 ## Why this is parked here
 
-OCTAVE's C++ / Qt 6 backend (`src/`) is the primary desktop build across Windows, macOS, Linux, Raspberry Pi, and is now the **only** Android build. The Python / PySide6 Android APK (buildozer/p4a) was deleted on 2026-05-02 — Python is desktop-only and there is no longer a Python reference build for Android.
+coscar-OS's C++ / Qt 6 backend (`src/`) is the primary desktop build across Windows, macOS, Linux, Raspberry Pi, and is now the **only** Android build. The Python / PySide6 Android APK (buildozer/p4a) was deleted on 2026-05-02 — Python is desktop-only and there is no longer a Python reference build for Android.
 
 This TODO tracks finishing the C++ APK feature work. Build + sideload already work:
 

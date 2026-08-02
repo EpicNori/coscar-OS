@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-OCTAVE (Open-source Cross-platform Telematics for Augmented Vehicle Experience) is a **C++ / Qt 6 / QML** infotainment system designed for vehicles. It runs on Windows, macOS, Linux, Raspberry Pi, iOS, and Android.
+coscar-OS (Open-source Cross-platform Telematics for Augmented Vehicle Experience) is a **C++ / Qt 6 / QML** infotainment system designed for vehicles. It runs on Windows, macOS, Linux, Raspberry Pi, iOS, and Android.
 
 ### Backend state: C++ is the only shipped binary; Python is a developer/tinkerer backend
 
-OCTAVE intentionally maintains **two parallel backends** — C++ / Qt 6 (`src/`) and Python / PySide6 (`backend/`, `main.py`) — that expose the same API surface to the shared QML frontend (`frontend/`). This is deliberate: Python stays alive for tinkering, accessibility, rapid prototyping, and hardware hacking on Raspberry Pi / single-board setups where a Python REPL is invaluable; C++ is the **sole distribution path** — every shipped binary on every platform (Windows `.exe`, macOS `.dmg`, Linux AppImage / `.deb`, Android `.apk`, iOS `.ipa` once enabled) is built from the C++ tree. Python is not compiled or packaged by CI; tinkerers run it via `python setup.py` or `python main.py` from a checkout.
+coscar-OS intentionally maintains **two parallel backends** — C++ / Qt 6 (`src/`) and Python / PySide6 (`backend/`, `main.py`) — that expose the same API surface to the shared QML frontend (`frontend/`). This is deliberate: Python stays alive for tinkering, accessibility, rapid prototyping, and hardware hacking on Raspberry Pi / single-board setups where a Python REPL is invaluable; C++ is the **sole distribution path** — every shipped binary on every platform (Windows `.exe`, macOS `.dmg`, Linux AppImage / `.deb`, Android `.apk`, iOS `.ipa` once enabled) is built from the C++ tree. Python is not compiled or packaged by CI; tinkerers run it via `python setup.py` or `python main.py` from a checkout.
 
 **Mobile (Android/iOS) is C++-only.** The Python backend is desktop-only (Linux / Windows / macOS / Raspberry Pi). Python-on-Android via buildozer/p4a has been removed — do not reintroduce `backend/platform_config.py`, `backend/stubs.py`, `backend/android_obd_manager.py`, `backend/android_sensors.py`, `deployment/buildozer.spec`, or `requirements-android.txt`. Mobile-specific code lives behind `#ifdef Q_OS_ANDROID` / `#ifdef Q_OS_IOS` in C++ and does **not** need a Python mirror.
 
@@ -178,9 +178,9 @@ Custom `QQuickImageProvider` subclasses stream video frames directly to QML for 
 ### Settings Persistence
 
 User settings stored in `settingsConfigure.json` at OS-specific paths:
-- Windows: `%APPDATA%/OCTAVE/`
-- macOS: `~/Library/Application Support/OCTAVE/`
-- Linux: `~/.config/OCTAVE/`
+- Windows: `%APPDATA%/coscar-OS/`
+- macOS: `~/Library/Application Support/coscar-OS/`
+- Linux: `~/.config/coscar-OS/`
 
 ### Logging
 

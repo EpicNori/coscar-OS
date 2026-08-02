@@ -1,7 +1,7 @@
 """
 Android Auto Manager (DHU Mode Only)
 
-This manager controls Android Auto integration in OCTAVE using Google's
+This manager controls Android Auto integration in coscar-OS using Google's
 Desktop Head Unit (DHU). The DHU handles all protocol communication with
 the phone - we just launch it, capture its window, and forward clicks.
 
@@ -29,7 +29,7 @@ logger = get_logger(__name__)
 
 class AndroidAutoManager(QObject):
     """
-    Android Auto manager for OCTAVE (DHU mode only).
+    Android Auto manager for coscar-OS (DHU mode only).
 
     This class handles:
     - Finding and launching Google's Desktop Head Unit (DHU)
@@ -555,7 +555,7 @@ After installation, click "Launch Android Auto" button."""
     @Slot()
     def cleanup(self):
         """
-        Full cleanup when OCTAVE is closing.
+        Full cleanup when coscar-OS is closing.
         Stops DHU and cleans up ADB connections.
         """
         logger.info("Cleaning up Android Auto...")

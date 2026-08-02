@@ -1,5 +1,5 @@
 /**
- * OCTAVE Wiki — Fuzzy Search Engine
+ * coscar-OS Wiki — Fuzzy Search Engine
  * Client-side full-text search with typo tolerance, word splitting, and heading-level results.
  * No dependencies. Works offline.
  */

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Network Manager - OCTAVE Wiki</title>
+  <title>Network Manager - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Network Manager</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Network Manager</div>
           <h1 class="page-title">Network Manager</h1>
           <p class="page-subtitle">WiFi connectivity detection, GitHub-based update checking, and self-update capability</p>
         </div>
@@ -37,7 +37,7 @@
         <section id="overview">
           <h2>Overview</h2>
           <p>
-            The <strong>NetworkManager</strong> is responsible for three core functions within OCTAVE: detecting
+            The <strong>NetworkManager</strong> is responsible for three core functions within coscar-OS: detecting
             network connectivity status, checking for application updates via the GitHub API, and performing
             git-based self-updates when running from source. It is defined in
             <span class="file-path">backend/network_manager.py</span> and registered as a QML context property
@@ -52,7 +52,7 @@
           </div>
 
           <p>
-            The manager targets the GitHub repository <code>WayBetterSolutions/OCTAVE</code> and compares the
+            The manager targets the GitHub repository <code>EpicNori/coscar-OS</code> and compares the
             local git HEAD against the remote <code>main</code> branch to determine update availability.
           </p>
         </section>
@@ -179,8 +179,8 @@ NetworkManager
               from the repository root directory to get the 7-character short hash.
             </li>
             <li>
-              <strong>Query GitHub API</strong> -- Fetches <code>https://api.github.com/repos/WayBetterSolutions/OCTAVE/commits/main</code>
-              with a <code>User-Agent: OCTAVE-Updater</code> header.
+              <strong>Query GitHub API</strong> -- Fetches <code>https://api.github.com/repos/EpicNori/coscar-OS/commits/main</code>
+              with a <code>User-Agent: coscar-OS-Updater</code> header.
             </li>
             <li>
               <strong>Compare hashes</strong> -- Truncates the remote SHA to 7 characters and compares with the local hash.
@@ -301,7 +301,7 @@ NetworkManager
           <h2>Device Shutdown</h2>
           <p>
             The <code>shutdown_device()</code> slot provides a clean shutdown sequence for vehicle-mounted
-            installations: it schedules an OS power-off command and then quits the OCTAVE application.
+            installations: it schedules an OS power-off command and then quits the coscar-OS application.
           </p>
           <pre><code><span class="cmt"># Platform-specific shutdown commands:</span>
 Linux:   systemctl --no-block poweroff
@@ -362,8 +362,8 @@ Windows: shutdown /s /t 5</code></pre>
               <tr><td><code>refreshNetwork()</code></td><td>--</td><td>Manually trigger a network status check</td></tr>
               <tr><td><code>checkForUpdates()</code></td><td>--</td><td>Start a GitHub update check</td></tr>
               <tr><td><code>applySelfUpdate()</code></td><td>--</td><td>Begin the git self-update pipeline</td></tr>
-              <tr><td><code>restartApp()</code></td><td>--</td><td>Restart the OCTAVE application</td></tr>
-              <tr><td><code>shutdown_device()</code></td><td>--</td><td>Shut down the host OS and quit OCTAVE</td></tr>
+              <tr><td><code>restartApp()</code></td><td>--</td><td>Restart the coscar-OS application</td></tr>
+              <tr><td><code>shutdown_device()</code></td><td>--</td><td>Shut down the host OS and quit coscar-OS</td></tr>
             </tbody>
           </table>
         </section>

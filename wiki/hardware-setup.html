@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hardware Setup - OCTAVE Wiki</title>
+  <title>Hardware Setup - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,9 +11,9 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Hardware Setup</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Hardware Setup</div>
           <h1 class="page-title">Hardware Setup</h1>
-          <p class="page-subtitle">Wiring, firmware, mounting, and configuration for all OCTAVE hardware peripherals.</p>
+          <p class="page-subtitle">Wiring, firmware, mounting, and configuration for all coscar-OS hardware peripherals.</p>
         </div>
 
         <nav class="toc">
@@ -38,7 +38,7 @@
 <pre>
   [Rotary Encoder]          ESP-NOW (2.4GHz)         [USB Serial]
   [  + Button    ] ----> [ESP32 Dev Board] ~~~~> [ESP32-S3 Dongle] ----> Computer
-  [  + LED Ring  ]         "Encoder Unit"            "Receiver"          (OCTAVE)
+  [  + LED Ring  ]         "Encoder Unit"            "Receiver"          (coscar-OS)
                           Sends: +, -, M           Forwards to USB
                                                     at 115200 baud
 </pre>
@@ -49,18 +49,18 @@
         <table>
           <thead><tr><th>Command</th><th>Direction</th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td><code>+</code> or <code>+N</code></td><td>ESP32 -> OCTAVE</td><td>Volume up (N ticks clockwise)</td></tr>
-            <tr><td><code>-</code> or <code>-N</code></td><td>ESP32 -> OCTAVE</td><td>Volume down (N ticks counter-clockwise)</td></tr>
-            <tr><td><code>M</code></td><td>ESP32 -> OCTAVE</td><td>Mute toggle (encoder button press)</td></tr>
-            <tr><td><code>P</code></td><td>ESP32 -> OCTAVE</td><td>Play/pause (double-click, not yet implemented)</td></tr>
-            <tr><td><code>V##</code></td><td>OCTAVE -> ESP32</td><td>Current volume level (0-100) for LED display</td></tr>
-            <tr><td><code>M0</code> / <code>M1</code></td><td>OCTAVE -> ESP32</td><td>Mute state (0=unmuted, 1=muted)</td></tr>
-            <tr><td><code>C###,###,###</code></td><td>OCTAVE -> ESP32</td><td>Theme RGB color for LED ring (e.g., C255,128,0)</td></tr>
+            <tr><td><code>+</code> or <code>+N</code></td><td>ESP32 -> coscar-OS</td><td>Volume up (N ticks clockwise)</td></tr>
+            <tr><td><code>-</code> or <code>-N</code></td><td>ESP32 -> coscar-OS</td><td>Volume down (N ticks counter-clockwise)</td></tr>
+            <tr><td><code>M</code></td><td>ESP32 -> coscar-OS</td><td>Mute toggle (encoder button press)</td></tr>
+            <tr><td><code>P</code></td><td>ESP32 -> coscar-OS</td><td>Play/pause (double-click, not yet implemented)</td></tr>
+            <tr><td><code>V##</code></td><td>coscar-OS -> ESP32</td><td>Current volume level (0-100) for LED display</td></tr>
+            <tr><td><code>M0</code> / <code>M1</code></td><td>coscar-OS -> ESP32</td><td>Mute state (0=unmuted, 1=muted)</td></tr>
+            <tr><td><code>C###,###,###</code></td><td>coscar-OS -> ESP32</td><td>Theme RGB color for LED ring (e.g., C255,128,0)</td></tr>
           </tbody>
         </table>
 
         <h3>ESP32-S3 Auto-Detection</h3>
-        <p>OCTAVE automatically detects ESP32-S3 USB devices by checking for the Espressif VID <code>303A</code> in USB hardware IDs. Platform-specific port scanning:</p>
+        <p>coscar-OS automatically detects ESP32-S3 USB devices by checking for the Espressif VID <code>303A</code> in USB hardware IDs. Platform-specific port scanning:</p>
         <ul>
           <li><strong>Windows:</strong> Scans COM ports, looks for VID 303A or "USB JTAG/serial debug unit" in description</li>
           <li><strong>macOS:</strong> Checks <code>/dev/tty.usbserial*</code>, <code>/dev/cu.usbmodem*</code>, etc.</li>
@@ -68,7 +68,7 @@
         </ul>
 
         <div class="info-box info">
-          <strong>Auto-Connect:</strong> On startup, OCTAVE waits 3 seconds, scans for devices, and auto-selects the ESP32-S3 port if no port is configured. The OBD port is filtered out to avoid conflicts.
+          <strong>Auto-Connect:</strong> On startup, coscar-OS waits 3 seconds, scans for devices, and auto-selects the ESP32-S3 port if no port is configured. The OBD port is filtered out to avoid conflicts.
         </div>
 
         <h3>Reconnection Behavior</h3>
@@ -83,13 +83,13 @@
         <ul>
           <li><strong>Theme mode:</strong> LED color follows album art extracted theme colors</li>
           <li><strong>Static mode:</strong> LED uses a fixed user-chosen color</li>
-          <li><strong>Sleep mode:</strong> LEDs turn off after ESP32 timeout when OCTAVE stops sending keepalives</li>
+          <li><strong>Sleep mode:</strong> LEDs turn off after ESP32 timeout when coscar-OS stops sending keepalives</li>
         </ul>
 
         <!-- BerryIMU -->
         <h2 id="berryimu">BerryIMU v3 IMU Sensor</h2>
         <span class="platform-badge linux">Linux / Raspberry Pi</span>
-        <p>The BerryIMU v3 provides 10 degrees of freedom (accelerometer, gyroscope, magnetometer, barometer) over I2C. OCTAVE uses Madgwick 9DOF AHRS for sensor fusion, outputting a quaternion directly to the QML 3D model.</p>
+        <p>The BerryIMU v3 provides 10 degrees of freedom (accelerometer, gyroscope, magnetometer, barometer) over I2C. coscar-OS uses Madgwick 9DOF AHRS for sensor fusion, outputting a quaternion directly to the QML 3D model.</p>
 
         <h3>I2C Wiring</h3>
         <div class="diagram">
@@ -129,7 +129,7 @@
 
         <div class="info-box warning">
           <div class="info-box-title">Enable I2C bus 2 first</div>
-          OCTAVE opens the BerryIMU and PAJ7620 on <strong>I2C bus 2</strong> (<code>/dev/i2c-2</code>),
+          coscar-OS opens the BerryIMU and PAJ7620 on <strong>I2C bus 2</strong> (<code>/dev/i2c-2</code>),
           which is <em>not</em> exposed on the Raspberry Pi's GPIO header by default &mdash; pins 3/5 are
           <code>i2c-1</code> out of the box. Expose bus 2 with a device-tree overlay in
           <code>/boot/firmware/config.txt</code> (e.g. an <code>i2c-gpio</code> overlay mapping SDA/SCL to
@@ -149,7 +149,7 @@
         </ol>
 
         <h3>Reconnection</h3>
-        <p>If initialization fails, OCTAVE retries up to 5 times with linear backoff (5s, 10s, 15s, 20s, 25s). Permission errors do not trigger retries (user must fix I2C permissions).</p>
+        <p>If initialization fails, coscar-OS retries up to 5 times with linear backoff (5s, 10s, 15s, 20s, 25s). Permission errors do not trigger retries (user must fix I2C permissions).</p>
 
         <!-- Gesture Sensor -->
         <h2 id="gesture-sensor">PAJ7620U2 Gesture Sensor</h2>

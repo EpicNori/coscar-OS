@@ -2195,7 +2195,7 @@ void OBDManager::requestAndroidBluetoothPermission(std::function<void(bool)> don
         if (!granted) {
             emit connectionStatusChanged(QStringLiteral("Bluetooth permission denied"));
             emit connectionStatusDetailChanged(
-                QStringLiteral("Grant Bluetooth in Settings -> Apps -> OCTAVE -> Permissions"));
+                QStringLiteral("Grant Bluetooth in Settings -> Apps -> coscar-OS -> Permissions"));
         }
         done(granted);
     });

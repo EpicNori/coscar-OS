@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hardware Managers - OCTAVE Wiki</title>
+  <title>Hardware Managers - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Hardware Managers</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Hardware Managers</div>
           <h1 class="page-title">Hardware Managers</h1>
           <p class="page-subtitle">ESP32 Volume Controller, BerryIMU v3 Sensor Fusion, and PAJ7620U2 Gesture Sensor</p>
         </div>
@@ -80,7 +80,7 @@
                                                   115200 baud
                                                        |
                                               +--------v----------+
-                                              |     OCTAVE        |
+                                              |     coscar-OS        |
                                               |  ESP32VolumeManager|
                                               +-------------------+
           </div>
@@ -154,7 +154,7 @@
 
         <section id="esp32-commands">
           <h3>Command Protocol</h3>
-          <h4>Incoming Commands (ESP32 to OCTAVE)</h4>
+          <h4>Incoming Commands (ESP32 to coscar-OS)</h4>
           <table>
             <thead>
               <tr><th>Command</th><th>Meaning</th><th>Example</th></tr>
@@ -174,7 +174,7 @@
             accumulation for fast knob rotation.
           </p>
 
-          <h4>Outgoing Commands (OCTAVE to ESP32)</h4>
+          <h4>Outgoing Commands (coscar-OS to ESP32)</h4>
           <table>
             <thead>
               <tr><th>Command</th><th>Format</th><th>Description</th></tr>
@@ -190,7 +190,7 @@
         <section id="esp32-leds">
           <h3>LED Color Sync</h3>
           <p>
-            The ESP32 receiver has an LED ring that displays volume level. OCTAVE sends:
+            The ESP32 receiver has an LED ring that displays volume level. coscar-OS sends:
           </p>
           <ul>
             <li><strong>Volume updates</strong> -- Rate-limited to max 20 updates/sec (50ms debounce timer) to prevent LED flickering during rapid slider drags</li>
@@ -200,7 +200,7 @@
 
           <h4>Keepalive System</h4>
           <p>
-            The ESP32 has a 5-second LED timeout. When <strong>LED sleep is disabled</strong>, OCTAVE sends
+            The ESP32 has a 5-second LED timeout. When <strong>LED sleep is disabled</strong>, coscar-OS sends
             keepalive volume updates every <strong>2 seconds</strong>. When LED sleep is enabled, keepalives
             are stopped, allowing the LEDs to turn off after the timeout.
           </p>

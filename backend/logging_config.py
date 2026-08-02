@@ -24,7 +24,7 @@ _initialized = False
 
 def _get_log_dir():
     """Get the logs directory, creating it if needed."""
-    app_name = "OCTAVE"
+    app_name = "coscar-OS"
 
     if sys.platform == 'win32':
         base = os.environ.get('APPDATA', os.path.expanduser('~'))

@@ -8,7 +8,7 @@ from datetime import datetime
 # Force Qt Quick Controls to use Basic style (allows Slider customization)
 os.environ["QT_QUICK_CONTROLS_STYLE"] = "Basic"
 
-parser = argparse.ArgumentParser(description='OCTAVE Infotainment System')
+parser = argparse.ArgumentParser(description='coscar-OS Infotainment System')
 parser.add_argument('--debug', action='store_true', help='Enable debug logging')
 parser.add_argument('--profile', action='store_true', help='Enable performance monitor')
 args, _ = parser.parse_known_args()

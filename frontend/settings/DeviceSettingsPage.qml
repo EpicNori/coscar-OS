@@ -119,7 +119,7 @@ Flickable {
                 spacing: App.Spacing.rowSpacing
 
                 SettingDescription {
-                    text: "Shut down OCTAVE and power off the device."
+                    text: "Shut down coscar-OS and power off the device."
                 }
 
                 RowLayout {

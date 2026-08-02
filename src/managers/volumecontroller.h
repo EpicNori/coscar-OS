@@ -8,7 +8,7 @@ class SettingsManager;
 /**
  * @brief Single entry point for applying a UI volume percent to every output.
  *
- * OCTAVE maps the UI volume percent (0-100) to a linear audio volume (0.0-1.0)
+ * coscar-OS maps the UI volume percent (0-100) to a linear audio volume (0.0-1.0)
  * through a quadratic curve (y = x^2). This gives a more natural perceptual
  * response than linear at low volumes. Every audio output in the app must use
  * this same curve or they will drift out of sync when the user moves the slider.

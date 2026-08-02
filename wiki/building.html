@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Building &amp; Distribution - OCTAVE Wiki</title>
+  <title>Building &amp; Distribution - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Building &amp; Distribution</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Building &amp; Distribution</div>
           <h1 class="page-title">Building &amp; Distribution</h1>
           <p class="page-subtitle">PyInstaller build process, platform-specific packaging, CI/CD workflow, and distribution formats.</p>
         </div>
@@ -43,7 +43,7 @@
 <span class="fn">python</span> build_scripts/build.py --clean --build-after-clean</code></pre>
 
         <div class="info-box info">
-          <strong>Build Location:</strong> The build script uses the system temp directory (<code>/tmp/OCTAVE_build</code> and <code>/tmp/OCTAVE_dist</code>) for intermediate files to avoid Dropbox sync issues. Final output is copied to <code>dist/</code> in the project root.
+          <strong>Build Location:</strong> The build script uses the system temp directory (<code>/tmp/coscar-OS_build</code> and <code>/tmp/coscar-OS_dist</code>) for intermediate files to avoid Dropbox sync issues. Final output is copied to <code>dist/</code> in the project root.
         </div>
 
         <!-- Build Script -->
@@ -103,7 +103,7 @@
         <table>
           <thead><tr><th>Setting</th><th>Windows</th><th>macOS</th><th>Linux</th></tr></thead>
           <tbody>
-            <tr><td>Name</td><td>OCTAVE</td><td>OCTAVE</td><td>octave (lowercase)</td></tr>
+            <tr><td>Name</td><td>coscar-OS</td><td>coscar-OS</td><td>octave (lowercase)</td></tr>
             <tr><td>Console</td><td>False (GUI)</td><td>False (GUI)</td><td>False (GUI)</td></tr>
             <tr><td>UPX</td><td>True</td><td>True</td><td>True</td></tr>
             <tr><td>argv_emulation</td><td>False</td><td>True</td><td>False</td></tr>
@@ -123,8 +123,8 @@
 
         <h3>Output</h3>
         <ul>
-          <li><code>dist\OCTAVE\OCTAVE.exe</code> - Standalone executable (portable, distribute the whole folder)</li>
-          <li><code>dist\OCTAVE_Setup_1.0.0.exe</code> - Inno Setup installer (if Inno Setup is installed)</li>
+          <li><code>dist\coscar-OS\coscar-OS.exe</code> - Standalone executable (portable, distribute the whole folder)</li>
+          <li><code>dist\coscar-OS_Setup_1.0.0.exe</code> - Inno Setup installer (if Inno Setup is installed)</li>
         </ul>
 
         <h3>Inno Setup Installer</h3>
@@ -142,13 +142,13 @@
 
         <h3>Output</h3>
         <ul>
-          <li><code>dist/OCTAVE.app</code> - Application bundle</li>
-          <li><code>dist/OCTAVE_1.0.0.dmg</code> - DMG installer with Applications symlink</li>
+          <li><code>dist/coscar-OS.app</code> - Application bundle</li>
+          <li><code>dist/coscar-OS_1.0.0.dmg</code> - DMG installer with Applications symlink</li>
         </ul>
 
         <h3>App Bundle Info.plist</h3>
         <p>The spec file configures the macOS app bundle with:</p>
-        <pre><code>bundle_identifier: <span class="str">'com.waybettersolutions.octave'</span>
+        <pre><code>bundle_identifier: <span class="str">'io.epicnori.coscaros'</span>
 NSHighResolutionCapable: <span class="kw">True</span>
 NSRequiresAquaSystemAppearance: <span class="kw">False</span>  <span class="cmt"># Dark mode support</span>
 LSMinimumSystemVersion: <span class="str">'10.14.0'</span>
@@ -158,7 +158,7 @@ LSMinimumSystemVersion: <span class="str">'10.14.0'</span>
         <p>The build script creates a DMG using <code>hdiutil create</code> in UDZO (compressed) format, with an Applications symlink for drag-to-install.</p>
 
         <div class="info-box warning">
-          <strong>Code Signing:</strong> Unsigned macOS apps trigger Gatekeeper warnings. Users can bypass with <code>xattr -cr /Applications/OCTAVE.app</code>. For distribution, sign with a Developer ID certificate.
+          <strong>Code Signing:</strong> Unsigned macOS apps trigger Gatekeeper warnings. Users can bypass with <code>xattr -cr /Applications/coscar-OS.app</code>. For distribution, sign with a Developer ID certificate.
         </div>
 
         <!-- Linux -->
@@ -174,13 +174,13 @@ LSMinimumSystemVersion: <span class="str">'10.14.0'</span>
 
         <h3>Output</h3>
         <ul>
-          <li><code>dist/OCTAVE/octave</code> - Standalone executable</li>
-          <li><code>dist/OCTAVE-x86_64.AppImage</code> - Portable single-file AppImage</li>
+          <li><code>dist/coscar-OS/octave</code> - Standalone executable</li>
+          <li><code>dist/coscar-OS-x86_64.AppImage</code> - Portable single-file AppImage</li>
         </ul>
 
         <h3>AppImage Structure</h3>
         <p>The build script creates an AppDir with proper structure:</p>
-        <pre><code>OCTAVE.AppDir/
+        <pre><code>coscar-OS.AppDir/
   AppRun                    <span class="cmt"># Shell script entry point</span>
   octave.desktop            <span class="cmt"># Desktop entry file</span>
   usr/bin/                  <span class="cmt"># All PyInstaller output</span>
@@ -205,9 +205,9 @@ LSMinimumSystemVersion: <span class="str">'10.14.0'</span>
         <table>
           <thead><tr><th>Job</th><th>Runner</th><th>Artifacts</th><th>Retention</th></tr></thead>
           <tbody>
-            <tr><td>build-windows</td><td>windows-latest</td><td>OCTAVE-Windows (folder zip)</td><td>30 days</td></tr>
-            <tr><td>build-macos</td><td>macos-latest</td><td>OCTAVE-macOS-App, OCTAVE-macOS-DMG</td><td>30 days</td></tr>
-            <tr><td>build-linux</td><td>ubuntu-22.04</td><td>OCTAVE-Linux (folder), OCTAVE-Linux-AppImage</td><td>30 days</td></tr>
+            <tr><td>build-windows</td><td>windows-latest</td><td>coscar-OS-Windows (folder zip)</td><td>30 days</td></tr>
+            <tr><td>build-macos</td><td>macos-latest</td><td>coscar-OS-macOS-App, coscar-OS-macOS-DMG</td><td>30 days</td></tr>
+            <tr><td>build-linux</td><td>ubuntu-22.04</td><td>coscar-OS-Linux (folder), coscar-OS-Linux-AppImage</td><td>30 days</td></tr>
             <tr><td>release</td><td>ubuntu-latest</td><td>GitHub Release with all artifacts</td><td>Permanent</td></tr>
           </tbody>
         </table>
@@ -243,17 +243,17 @@ LSMinimumSystemVersion: <span class="str">'10.14.0'</span>
         <p>Install the Visual C++ Redistributable: <a href="https://aka.ms/vs/17/release/vc_redist.x64.exe">Download link</a></p>
 
         <h3>"App is damaged" on macOS</h3>
-        <pre><code>xattr -cr /Applications/OCTAVE.app</code></pre>
+        <pre><code>xattr -cr /Applications/coscar-OS.app</code></pre>
 
         <h3>Missing Qt Plugins</h3>
         <p>Ensure PySide6 version matches between <code>requirements.txt</code> and the build environment. Version mismatches cause missing plugin errors at runtime.</p>
 
         <h3>AppImage Won't Run</h3>
         <pre><code><span class="cmt"># Make executable</span>
-chmod +x OCTAVE-x86_64.AppImage
+chmod +x coscar-OS-x86_64.AppImage
 
 <span class="cmt"># If FUSE unavailable, extract and run</span>
-./OCTAVE-x86_64.AppImage --appimage-extract
+./coscar-OS-x86_64.AppImage --appimage-extract
 ./squashfs-root/AppRun</code></pre>
 
         <h3>Dropbox Sync Interference</h3>

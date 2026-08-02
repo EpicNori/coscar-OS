@@ -1,4 +1,4 @@
-name: Build OCTAVE
+name: Build coscar-OS
 
 on:
   # Manual trigger from GitHub UI
@@ -108,18 +108,18 @@ jobs:
       - name: Deploy Qt runtime
         shell: bash
         run: |
-          mkdir -p dist/OCTAVE
+          mkdir -p dist/coscar-OS
           # MSVC multi-config drops the binary in build/Release/; single-config in build/.
           if [ -f build/Release/octave.exe ]; then
-            cp build/Release/octave.exe dist/OCTAVE/
+            cp build/Release/octave.exe dist/coscar-OS/
           else
-            cp build/octave.exe dist/OCTAVE/
+            cp build/octave.exe dist/coscar-OS/
           fi
           # Copy taglib runtime DLL alongside the .exe (vcpkg dynamic build).
-          cp "$VCPKG_INSTALLATION_ROOT"/installed/x64-windows/bin/tag.dll dist/OCTAVE/ 2>/dev/null || true
-          windeployqt --qmldir frontend --release dist/OCTAVE/octave.exe
-          # Inno Setup expects the binary at OCTAVE.exe (capitalized) per the .iss.
-          mv dist/OCTAVE/octave.exe dist/OCTAVE/OCTAVE.exe
+          cp "$VCPKG_INSTALLATION_ROOT"/installed/x64-windows/bin/tag.dll dist/coscar-OS/ 2>/dev/null || true
+          windeployqt --qmldir frontend --release dist/coscar-OS/octave.exe
+          # Inno Setup expects the branded coscar-OS.exe binary per the .iss.
+          mv dist/coscar-OS/octave.exe dist/coscar-OS/coscar-OS.exe
 
       - name: Build Windows installer (Inno Setup)
         shell: pwsh
@@ -138,8 +138,8 @@ jobs:
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
-          name: OCTAVE-Windows-cpp
-          path: dist/OCTAVE-*-windows-x86_64.exe
+          name: coscar-OS-Windows-cpp
+          path: dist/coscar-OS-*-windows-x86_64.exe
           retention-days: 30
           if-no-files-found: error
 
@@ -170,29 +170,29 @@ jobs:
 
       - name: Bundle .app + create DMG
         run: |
-          # qt_add_executable produces lowercase 'octave.app'; rename for distribution.
+          # qt_add_executable produces the legacy lowercase 'octave.app'; rename for distribution.
           mkdir -p dist
-          mv build/octave.app dist/OCTAVE.app
-          macdeployqt dist/OCTAVE.app -qmldir=frontend -dmg
-          # Rename to the unified scheme: OCTAVE-<version>-macos.dmg.
+          mv build/octave.app dist/coscar-OS.app
+          macdeployqt dist/coscar-OS.app -qmldir=frontend -dmg
+          # Rename to the unified scheme: coscar-OS-<version>-macos.dmg.
           # Workflow runs on tag pushes only, so GITHUB_REF_NAME is always vX.Y.
           VERSION="${GITHUB_REF_NAME#v}"
           [ -z "$VERSION" ] && VERSION="0.0.0"
-          mv dist/OCTAVE.dmg "dist/OCTAVE-${VERSION}-macos.dmg"
+          mv dist/coscar-OS.dmg "dist/coscar-OS-${VERSION}-macos.dmg"
           ls -la dist/
 
       - name: Upload macOS .app
         uses: actions/upload-artifact@v4
         with:
-          name: OCTAVE-macOS-cpp-App
-          path: dist/OCTAVE.app/
+          name: coscar-OS-macOS-cpp-App
+          path: dist/coscar-OS.app/
           retention-days: 30
 
       - name: Upload macOS .dmg
         uses: actions/upload-artifact@v4
         with:
-          name: OCTAVE-macOS-cpp-DMG
-          path: dist/OCTAVE-*-macos.dmg
+          name: coscar-OS-macOS-cpp-DMG
+          path: dist/coscar-OS-*-macos.dmg
           retention-days: 30
 
   cpp-build-linux:
@@ -236,8 +236,8 @@ jobs:
       - name: Upload Linux AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: OCTAVE-Linux-cpp-AppImage
-          path: dist/OCTAVE-*-linux-x86_64.AppImage
+          name: coscar-OS-Linux-cpp-AppImage
+          path: dist/coscar-OS-*-linux-x86_64.AppImage
           retention-days: 30
           if-no-files-found: error
 
@@ -401,7 +401,7 @@ jobs:
             -validity 10000 \
             -storepass octavepass \
             -keypass octavepass \
-            -dname "CN=OCTAVE Test Build, O=WayBetterSolutions, C=US"
+            -dname "CN=coscar-OS Test Build, O=WayBetterSolutions, C=US"
 
           # 2. Locate unsigned APK (gradle drops it under build/outputs/apk/release/)
           UNSIGNED=$(find build-android -path '*/build/outputs/apk/release/*-unsigned.apk' | head -n1)
@@ -441,14 +441,14 @@ jobs:
           mkdir -p dist
           VERSION="${GITHUB_REF_NAME#v}"
           [ -z "$VERSION" ] && VERSION="dev"
-          cp octave-signed.apk "dist/OCTAVE-${VERSION}-android-arm64-v8a.apk"
+          cp octave-signed.apk "dist/coscar-OS-${VERSION}-android-arm64-v8a.apk"
           ls -la dist/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: OCTAVE-Android-APK
-          path: dist/OCTAVE-*-android-arm64-v8a.apk
+          name: coscar-OS-Android-APK
+          path: dist/coscar-OS-*-android-arm64-v8a.apk
           retention-days: 30
           if-no-files-found: error
 
@@ -483,8 +483,8 @@ jobs:
           # page) but is not attached to the public Release — keeps the
           # Releases page tidy.
           files: |
-            artifacts/OCTAVE-Windows-cpp/OCTAVE-*-windows-x86_64.exe
-            artifacts/OCTAVE-macOS-cpp-DMG/OCTAVE-*-macos.dmg
-            artifacts/OCTAVE-Linux-cpp-AppImage/OCTAVE-*-linux-x86_64.AppImage
-            artifacts/OCTAVE-Android-APK/OCTAVE-*-android-arm64-v8a.apk
+            artifacts/coscar-OS-Windows-cpp/coscar-OS-*-windows-x86_64.exe
+            artifacts/coscar-OS-macOS-cpp-DMG/coscar-OS-*-macos.dmg
+            artifacts/coscar-OS-Linux-cpp-AppImage/coscar-OS-*-linux-x86_64.AppImage
+            artifacts/coscar-OS-Android-APK/coscar-OS-*-android-arm64-v8a.apk
           generate_release_notes: true

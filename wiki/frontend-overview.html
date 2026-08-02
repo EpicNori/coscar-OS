@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Frontend Overview - OCTAVE Wiki</title>
+  <title>Frontend Overview - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Frontend Overview</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Frontend Overview</div>
           <h1 class="page-title">Frontend Overview</h1>
           <p class="page-subtitle">QML architecture, Main.qml structure, page routing, and the bridge between Python managers and the UI</p>
         </div>
@@ -34,7 +34,7 @@
         <!-- Architecture Overview -->
         <h2 id="architecture">QML Architecture Overview</h2>
 
-        <p>OCTAVE's frontend is built with <strong>Qt Quick 2.15</strong> (QML). The QML layer handles all visual presentation, animations, and user interaction. Business logic lives in backend manager classes &mdash; C++ / Qt 6 in <code>src/</code> (the shipped binary) or the parallel Python / PySide6 backend in <code>backend/</code> &mdash; that are exposed to QML as <strong>context properties</strong>. The frontend works identically against either backend.</p>
+        <p>coscar-OS's frontend is built with <strong>Qt Quick 2.15</strong> (QML). The QML layer handles all visual presentation, animations, and user interaction. Business logic lives in backend manager classes &mdash; C++ / Qt 6 in <code>src/</code> (the shipped binary) or the parallel Python / PySide6 backend in <code>backend/</code> &mdash; that are exposed to QML as <strong>context properties</strong>. The frontend works identically against either backend.</p>
 
         <div class="diagram">
 <pre>
@@ -135,7 +135,7 @@
         <!-- Page Routing -->
         <h2 id="page-routing">Page Routing Mechanism</h2>
 
-        <p>OCTAVE uses Qt's <code>StackView</code> for page navigation. The initial item is <code>MainMenu</code>:</p>
+        <p>coscar-OS uses Qt's <code>StackView</code> for page navigation. The initial item is <code>MainMenu</code>:</p>
 
         <pre><code><span class="cls">StackView</span> {
     <span class="prop">id</span>: stackView

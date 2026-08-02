@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build an OCTAVE AppImage for x86_64 Linux.
+# Build an coscar-OS AppImage for x86_64 Linux.
 #
 # Layout matches the binary's runtime asset lookup in src/main.cpp:
 #   applicationDirPath() -> AppDir/usr/bin
@@ -8,7 +8,7 @@
 # the lookup and the app exits silently with no window.
 #
 # Inputs:  none (run from the repo root or any cwd; script resolves its own paths)
-# Output:  dist/OCTAVE-${VERSION}-linux-x86_64.AppImage
+# Output:  dist/coscar-OS-${VERSION}-linux-x86_64.AppImage
 #
 # Required system packages (Ubuntu 22.04): build-essential cmake ninja-build
 #   pkg-config qt6-base-dev qt6-declarative-dev qt6-multimedia-dev
@@ -28,9 +28,9 @@ TOOLS_DIR="${REPO_ROOT}/packaging/linux/tools"
 
 VERSION="${OCTAVE_VERSION:-${GITHUB_REF_NAME:-}}"
 VERSION="${VERSION#v}"
-[ -z "$VERSION" ] && VERSION="$(grep -oP 'project\(OCTAVE VERSION \K[0-9.]+' "$REPO_ROOT/CMakeLists.txt" || echo 0.0.0)"
+[ -z "$VERSION" ] && VERSION="$(grep -oP 'project\(coscar-OS VERSION \K[0-9.]+' "$REPO_ROOT/CMakeLists.txt" || echo 0.0.0)"
 
-echo "==> OCTAVE AppImage build (version=$VERSION)"
+echo "==> coscar-OS AppImage build (version=$VERSION)"
 
 # ---- 1. Configure + build ------------------------------------------------
 echo "==> Configuring CMake (Release)"
@@ -55,7 +55,7 @@ cp -r "$REPO_ROOT/frontend/." "$APPDIR/usr/frontend/"
 cat > "$APPDIR/usr/share/applications/octave.desktop" <<'EOF'
 [Desktop Entry]
 Type=Application
-Name=OCTAVE
+Name=coscar-OS
 Comment=Open-source Cross-platform Telematics for Augmented Vehicle Experience
 Exec=octave
 Icon=octave
@@ -151,7 +151,7 @@ export QML_SOURCES_PATHS="$APPDIR/usr/frontend"
 # Skip linuxdeploy's auto-AppRun (we wrote our own with the right QML paths).
 export DEPLOY_PLATFORM_THEMES=1
 
-OUTPUT_NAME="OCTAVE-${VERSION}-linux-x86_64.AppImage"
+OUTPUT_NAME="coscar-OS-${VERSION}-linux-x86_64.AppImage"
 
 echo "==> Running linuxdeploy"
 "$TOOLS_DIR/$LD_BIN" \
@@ -167,7 +167,7 @@ echo "==> Running linuxdeploy"
 
 # linuxdeploy writes <Name>-<arch>.AppImage in cwd; rename to include version.
 mkdir -p "$DIST_DIR"
-PRODUCED=$(ls -t OCTAVE*.AppImage 2>/dev/null | head -n1 || true)
+PRODUCED=$(ls -t coscar-OS*.AppImage 2>/dev/null | head -n1 || true)
 if [ -z "$PRODUCED" ] || [ ! -f "$PRODUCED" ]; then
     echo "ERROR: linuxdeploy did not produce an AppImage"
     exit 1

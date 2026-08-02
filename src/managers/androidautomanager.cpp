@@ -1,5 +1,5 @@
 /*
- * Android Auto Manager for OCTAVE (C++ port)
+ * Android Auto Manager for coscar-OS (C++ port)
  *
  * Manages Google DHU subprocess, ADB port forwarding, frame capture,
  * and click forwarding.  Uses QScreen::grabWindow() for portable

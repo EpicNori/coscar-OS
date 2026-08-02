@@ -5,7 +5,7 @@ import QtQuick 2.15
 // Structural style tokens (radii, borders, spacing flags) consumed across the
 // settings component library via `EnvironmentTheme.active.*`.
 //
-// OCTAVE once shipped multiple selectable "environments" (Spacecraft, Deep Sea)
+// coscar-OS once shipped multiple selectable "environments" (Spacecraft, Deep Sea)
 // with their own canvas effect layers. Those presets were never finished and
 // the picker was removed, so only the single "Standard" look remains. This is
 // kept as a singleton exposing one fixed `active` object so the ~40 existing

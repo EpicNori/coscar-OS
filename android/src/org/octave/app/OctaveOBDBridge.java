@@ -1,5 +1,5 @@
 /*
- * OCTAVE OBD-II BLE bridge.
+ * coscar-OS OBD-II BLE bridge.
  *
  * Native Android BluetoothGatt path that bypasses Qt 6.7's QLowEnergyController.
  * Qt's BLE stack on Android 16 (SDK 36) has a broken QBluetoothPermission

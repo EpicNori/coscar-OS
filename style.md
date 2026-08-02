@@ -7,6 +7,8 @@ frosted-glass surfaces and modular widgets, adapted for a driver-facing
 infotainment screen. The original OCTAVE behavior and navigation remain the
 source of truth; this document records the new visual layer.
 
+The project is a redesign and continuation of [RobDeGeorge/OCTAVE](https://github.com/RobDeGeorge/OCTAVE). Original attribution and licensing are preserved in `NOTICE`, `LICENSE`, and `ORIGINAL-CREDITS.md`.
+
 ## Tokens
 
 - Background asset: `frontend/assets/glass-dashboard-bg.png`

@@ -1,5 +1,5 @@
 """
-BerryIMU v3 Manager for OCTAVE
+BerryIMU v3 Manager for coscar-OS
 Reads accelerometer, gyroscope, magnetometer, and barometer data from BerryIMU v3
 via I2C and emits signals to QML for the CarMenu 3D model and gauges.
 

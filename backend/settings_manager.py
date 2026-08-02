@@ -137,17 +137,17 @@ else:
 
 def get_app_data_dir():
     """Get the appropriate directory for storing app data based on platform."""
-    app_name = "OCTAVE"
+    app_name = "coscar-OS"
 
     if sys.platform == 'win32':
-        # Windows: Use %APPDATA%/OCTAVE
+        # Windows: Use %APPDATA%/coscar-OS
         base = os.environ.get('APPDATA', os.path.expanduser('~'))
         data_dir = os.path.join(base, app_name)
     elif sys.platform == 'darwin':
-        # macOS: Use ~/Library/Application Support/OCTAVE
+        # macOS: Use ~/Library/Application Support/coscar-OS
         data_dir = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support', app_name)
     else:
-        # Linux: Use ~/.config/OCTAVE
+        # Linux: Use ~/.config/coscar-OS
         base = os.environ.get('XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config'))
         data_dir = os.path.join(base, app_name)
 
@@ -419,7 +419,7 @@ class SettingsManager(QObject):
             "esp32VolumePort": "COM7",
             "esp32VolumeStepSize": 1,  # 1% per encoder tick for fine control
             "esp32AutoReconnect": True,
-            "esp32LedSleepEnabled": True,  # LEDs turn off when OCTAVE closes
+            "esp32LedSleepEnabled": True,  # LEDs turn off when coscar-OS closes
             "esp32LedColorMode": "theme",  # "theme" (follows album art) or "static"
             "esp32LedStaticColor": "#00FFFF",  # Static color when not using theme
             # Waveform visualizer settings
@@ -1726,17 +1726,17 @@ class SettingsManager(QObject):
     # ESP32 LED Sleep Enable
     @Property(bool, notify=esp32LedSleepEnabledChanged)
     def esp32LedSleepEnabled(self):
-        """Get whether ESP32 LEDs sleep when OCTAVE closes"""
+        """Get whether ESP32 LEDs sleep when coscar-OS closes"""
         return self._esp32_led_sleep_enabled
 
     @Slot(result=bool)
     def get_esp32_led_sleep_enabled(self):
-        """Get whether ESP32 LEDs sleep when OCTAVE closes"""
+        """Get whether ESP32 LEDs sleep when coscar-OS closes"""
         return self._esp32_led_sleep_enabled
 
     @Slot(bool)
     def save_esp32_led_sleep_enabled(self, enabled):
-        """Save whether ESP32 LEDs sleep when OCTAVE closes"""
+        """Save whether ESP32 LEDs sleep when coscar-OS closes"""
         logger.debug(f"Saving ESP32 LED sleep enabled: {enabled}")
         self._esp32_led_sleep_enabled = enabled
         self.update_setting("esp32LedSleepEnabled", enabled, self.esp32LedSleepEnabledChanged)

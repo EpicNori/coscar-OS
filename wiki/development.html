@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Development Guide - OCTAVE Wiki</title>
+  <title>Development Guide - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Development Guide</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Development Guide</div>
           <h1 class="page-title">Development Guide</h1>
           <p class="page-subtitle">Dev mode, mock OBD, dev tools, MCP server, performance profiling, command server, and how to add new features.</p>
         </div>
@@ -137,13 +137,13 @@
         <!-- MCP Server -->
         <h2 id="mcp-server">MCP Server for Remote Control</h2>
         <p><span class="file-path">dev/mcp_server.py</span></p>
-        <p>The MCP (Model Context Protocol) server lets an AI agent (like Claude Code) remote-control OCTAVE for automated testing.</p>
+        <p>The MCP (Model Context Protocol) server lets an AI agent (like Claude Code) remote-control coscar-OS for automated testing.</p>
 
         <h3>Setup</h3>
         <pre><code><span class="cmt"># Install MCP dependency</span>
 pip install mcp
 
-<span class="cmt"># Start OCTAVE with command server enabled</span>
+<span class="cmt"># Start coscar-OS with command server enabled</span>
 <span class="fn">python</span> main.py --profile
 
 <span class="cmt"># In another terminal, start the MCP server</span>
@@ -161,7 +161,7 @@ pip install mcp
   Command Server (backend/command_server.py)
        |  QMetaObject.invokeMethod
        v
-  OCTAVE Managers (media, settings, OBD, etc.)
+  coscar-OS Managers (media, settings, OBD, etc.)
 </pre>
         </div>
 
@@ -169,7 +169,7 @@ pip install mcp
         <table>
           <thead><tr><th>Tool</th><th>Arguments</th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td><code>ping()</code></td><td>-</td><td>Check if OCTAVE is running</td></tr>
+            <tr><td><code>ping()</code></td><td>-</td><td>Check if coscar-OS is running</td></tr>
             <tr><td><code>navigate(page)</code></td><td>page name</td><td>Navigate to a specific page (home, media_room, obd, settings, etc.)</td></tr>
             <tr><td><code>go_back()</code></td><td>-</td><td>Navigate back in the stack</td></tr>
             <tr><td><code>go_home()</code></td><td>-</td><td>Return to home screen</td></tr>
@@ -287,7 +287,7 @@ cap.capture(<span class="str">"media_view"</span>, <span class="str">"Media play
 
         <!-- Adding Features -->
         <h2 id="adding-features">How to Add New Features</h2>
-        <p>OCTAVE follows a consistent pattern for every feature. Here is a step-by-step guide:</p>
+        <p>coscar-OS follows a consistent pattern for every feature. Here is a step-by-step guide:</p>
 
         <ol class="steps">
           <li>
@@ -327,7 +327,7 @@ cap.capture(<span class="str">"media_view"</span>, <span class="str">"Media play
         <!-- Testing -->
         <h2 id="testing">Testing &amp; Linting</h2>
         <div class="info-box">
-          <strong>Minimal automation:</strong> OCTAVE ships with a headless smoke test suite under <span class="file-path">tests/</span> and a ruff linter configured in <span class="file-path">pyproject.toml</span>. Both run in CI on every push and PR to <code>main</code>. Most testing is still manual — the smoke suite only catches import-time crashes and basic manager instantiation.
+          <strong>Minimal automation:</strong> coscar-OS ships with a headless smoke test suite under <span class="file-path">tests/</span> and a ruff linter configured in <span class="file-path">pyproject.toml</span>. Both run in CI on every push and PR to <code>main</code>. Most testing is still manual — the smoke suite only catches import-time crashes and basic manager instantiation.
         </div>
 
         <h3>Linter (ruff)</h3>

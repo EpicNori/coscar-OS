@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings Reference - OCTAVE Wiki</title>
+  <title>Settings Reference - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,9 +11,9 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Settings Reference</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Settings Reference</div>
           <h1 class="page-title">Settings Reference</h1>
-          <p class="page-subtitle">Complete reference for every setting in OCTAVE, with types, defaults, valid ranges, and the settings page where each appears.</p>
+          <p class="page-subtitle">Complete reference for every setting in coscar-OS, with types, defaults, valid ranges, and the settings page where each appears.</p>
         </div>
 
         <nav class="toc">
@@ -40,10 +40,10 @@
         <h2 id="overview">Overview</h2>
         <p>All settings are managed by <span class="file-path">backend/settings_manager.py</span> and persisted to <code>settingsConfigure.json</code> in the OS-specific config directory:</p>
         <ul>
-          <li><strong>Windows:</strong> <code>%APPDATA%/OCTAVE/settingsConfigure.json</code></li>
-          <li><strong>macOS:</strong> <code>~/Library/Application Support/OCTAVE/settingsConfigure.json</code></li>
-          <li><strong>Linux:</strong> <code>~/.config/OCTAVE/settingsConfigure.json</code></li>
-          <li><strong>Android:</strong> <code>&lt;cwd&gt;/OCTAVE/settingsConfigure.json</code></li>
+          <li><strong>Windows:</strong> <code>%APPDATA%/coscar-OS/settingsConfigure.json</code></li>
+          <li><strong>macOS:</strong> <code>~/Library/Application Support/coscar-OS/settingsConfigure.json</code></li>
+          <li><strong>Linux:</strong> <code>~/.config/coscar-OS/settingsConfigure.json</code></li>
+          <li><strong>Android:</strong> <code>&lt;cwd&gt;/coscar-OS/settingsConfigure.json</code></li>
         </ul>
         <p>Settings are loaded at startup, validated against the default schema, and saved atomically (write to temp file, then rename). File locking is used cross-platform to prevent corruption from concurrent access.</p>
 
@@ -58,7 +58,7 @@
             <tr><th>Property</th><th>JSON Key</th><th>Type</th><th>Default</th><th>Range / Values</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>deviceName</code></td><td>deviceName</td><td>str</td><td>"Default Device"</td><td>Any string</td><td>User-assigned name for this OCTAVE installation</td></tr>
+            <tr><td><code>deviceName</code></td><td>deviceName</td><td>str</td><td>"Default Device"</td><td>Any string</td><td>User-assigned name for this coscar-OS installation</td></tr>
             <tr><td><code>fontSetting</code></td><td>fontSetting</td><td>str</td><td>"Google Sans"</td><td>Any font name</td><td>UI font family used throughout the application</td></tr>
             <tr><td><code>windowState</code></td><td>windowState</td><td>str</td><td>"windowed"</td><td>"windowed", "fullscreen", "maximized"</td><td>Application window mode on startup</td></tr>
             <tr><td><code>screenWidth</code></td><td>screenWidth</td><td>int</td><td>1280</td><td>Any positive int</td><td>Window width in pixels</td></tr>
@@ -137,7 +137,7 @@
         </table>
 
         <div class="info-box info">
-          <strong>OBD Parameters:</strong> OCTAVE supports 87+ OBD-II PIDs. 19 are enabled by default (RPM, SPEED, COOLANT_TEMP, etc.). The full list includes O2 sensors (8 banks), catalyst temps, wide-range O2 voltage/current sensors, fuel system parameters, and diagnostic counters. Use the vehicle scan feature to detect which parameters your vehicle supports.
+          <strong>OBD Parameters:</strong> coscar-OS supports 87+ OBD-II PIDs. 19 are enabled by default (RPM, SPEED, COOLANT_TEMP, etc.). The full list includes O2 sensors (8 banks), catalyst temps, wide-range O2 voltage/current sensors, fuel system parameters, and diagnostic counters. Use the vehicle scan feature to detect which parameters your vehicle supports.
         </div>
 
         <!-- ESP32 Settings -->

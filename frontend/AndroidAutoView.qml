@@ -29,7 +29,7 @@ Item {
         color: "black"
     }
 
-    // Embedded DHU display - the DHU window is embedded directly inside OCTAVE
+    // Embedded DHU display - the DHU window is embedded directly inside coscar-OS
     Item {
         id: dhuContainer
         anchors.fill: parent

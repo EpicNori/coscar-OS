@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gauges &amp; Dashboards - OCTAVE Wiki</title>
+  <title>Gauges &amp; Dashboards - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="content">
       <div class="content-inner">
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Gauges &amp; Dashboards</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Gauges &amp; Dashboards</div>
           <h1 class="page-title">Gauges &amp; Dashboards</h1>
           <p class="page-subtitle">Reusable gauge primitives and pre-built dashboards for live OBD data. Accessed from the "Dashboards" pill in the top-right of the OBD menu.</p>
         </div>
@@ -28,7 +28,7 @@
         </nav>
 
         <h2 id="overview">Overview</h2>
-        <p>OCTAVE ships with a small library of gauge primitives under <span class="file-path">frontend/gauges/</span> and a set of pre-built dashboards defined as <strong>JSON specs</strong> under <span class="file-path">frontend/dashboards/presets/</span>, rendered by <span class="file-path">frontend/dashboards/DashboardRenderer.qml</span>. Dashboards render <strong>inline inside the OBD menu</strong> — the default view is the parameter-card grid, and selecting a dashboard swaps the grid for the chosen layout in place. Selection is persisted as the <code>activeDashboard</code> setting. <code>DashboardManager</code> (C++ and Python, full parity) enumerates built-in presets plus user-authored dashboards from the OS config dir and exposes save / delete / duplicate.</p>
+        <p>coscar-OS ships with a small library of gauge primitives under <span class="file-path">frontend/gauges/</span> and a set of pre-built dashboards defined as <strong>JSON specs</strong> under <span class="file-path">frontend/dashboards/presets/</span>, rendered by <span class="file-path">frontend/dashboards/DashboardRenderer.qml</span>. Dashboards render <strong>inline inside the OBD menu</strong> — the default view is the parameter-card grid, and selecting a dashboard swaps the grid for the chosen layout in place. Selection is persisted as the <code>activeDashboard</code> setting. <code>DashboardManager</code> (C++ and Python, full parity) enumerates built-in presets plus user-authored dashboards from the OS config dir and exposes save / delete / duplicate.</p>
         <p>Entry point: a "Dashboards" pill at the top-right of the OBD menu opens a modal chooser listing "Parameter Cards" plus each registered dashboard. Tapping a choice swaps the content and closes the popup.</p>
         <p>Gauges bind to the <strong>OBDParameterModel</strong> singleton by <code>paramId</code> (e.g. <code>"RPM"</code>, <code>"SPEED"</code>) — title, unit, min and max are auto-populated from the model, and the live value updates reactively as the backend polls each PID. No manual signal wiring is required.</p>
 
@@ -76,7 +76,7 @@
 
         <h2 id="authoring">Authoring new gauges &amp; dashboards</h2>
         <p>The complete API reference, all 93 supported PID IDs, theme tokens, needle-angle math, and step-by-step recipes for adding a new dashboard or a new primitive live in <span class="file-path">docs/GAUGE_AUTHORING.md</span>. That document is the source of truth — update it whenever the gauge API changes.</p>
-        <p>Quick recipe: build the dashboard in the in-app editor, or write a schema-1 JSON spec by hand — drop it in <span class="file-path">frontend/dashboards/presets/</span> to ship it as a built-in, or in the user dashboards directory (e.g. <span class="file-path">~/.config/OCTAVE/dashboards/</span> on Linux) for a local custom board. New gauge primitives must implement the shared binding API and be registered in <code>WidgetCatalog</code> to render and appear in the editor palette.</p>
+        <p>Quick recipe: build the dashboard in the in-app editor, or write a schema-1 JSON spec by hand — drop it in <span class="file-path">frontend/dashboards/presets/</span> to ship it as a built-in, or in the user dashboards directory (e.g. <span class="file-path">~/.config/coscar-OS/dashboards/</span> on Linux) for a local custom board. New gauge primitives must implement the shared binding API and be registered in <code>WidgetCatalog</code> to render and appear in the editor palette.</p>
 
         <div class="related-pages">
           <h3>Related Pages</h3>

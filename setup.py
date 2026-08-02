@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OCTAVE Setup Script
+coscar-OS Setup Script
 Cross-platform installer that handles dependencies and environment setup.
 
 Usage:
@@ -315,8 +315,8 @@ def install_python_deps(venv_path):
         sys.exit(1)
 
 def run_app(venv_path):
-    """Run the OCTAVE application."""
-    print_header("Starting OCTAVE")
+    """Run the coscar-OS application."""
+    print_header("Starting coscar-OS")
 
     python_path = get_python_path(venv_path)
     main_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main.py")
@@ -326,7 +326,7 @@ def run_app(venv_path):
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-    print_header("OCTAVE Setup")
+    print_header("coscar-OS Setup")
 
     # Detect platform
     plat = detect_platform()
@@ -360,7 +360,7 @@ def main():
 
     if "--no-run" in sys.argv:
         print(f"""
-To run OCTAVE:
+To run coscar-OS:
     {activate_cmd}
     python main.py
 """)
@@ -371,7 +371,7 @@ To run OCTAVE:
         print("  WSL Note: No display detected")
         print("=" * 50)
         print("""
-OCTAVE requires a display to run. Options:
+coscar-OS requires a display to run. Options:
 
 1. WSLg (Windows 11) - Should work automatically
    Try: wsl --update

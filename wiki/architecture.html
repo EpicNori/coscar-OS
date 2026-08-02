@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Architecture - OCTAVE Wiki</title>
+  <title>Architecture - coscar-OS Wiki</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
       <div class="content-inner">
 
         <div class="page-header">
-          <div class="breadcrumb"><a href="index.html">OCTAVE Wiki</a> / Architecture</div>
+          <div class="breadcrumb"><a href="index.html">coscar-OS Wiki</a> / Architecture</div>
           <h1 class="page-title">Architecture Overview</h1>
           <p class="page-subtitle">
             System design, communication patterns, threading model, and how all the pieces fit together.
@@ -48,8 +48,8 @@
         <!-- High-Level Architecture -->
         <h2 id="high-level">High-Level Architecture</h2>
         <p>
-          OCTAVE follows a clean <strong>backend/frontend separation</strong> connected by Qt's
-          signals and slots mechanism. OCTAVE maintains <strong>two parallel backends</strong> that
+          coscar-OS follows a clean <strong>backend/frontend separation</strong> connected by Qt's
+          signals and slots mechanism. coscar-OS maintains <strong>two parallel backends</strong> that
           expose the same API to the shared frontend: a <strong>C++ / Qt 6</strong> backend
           (<code>src/</code>) &mdash; the only shipped binary on every platform &mdash; and a
           <strong>Python / PySide6</strong> backend (<code>backend/</code>) used for desktop development
@@ -60,7 +60,7 @@
 
         <div class="diagram">
 ┌─────────────────────────────────────────────────────────────────┐
-│                        OCTAVE Application                       │
+│                        coscar-OS Application                       │
 │                                                                 │
 │  ┌──────────────────────┐    Signals/Slots    ┌──────────────┐ │
 │  │   Backend (C++ / Py)  │ ◄────────────────► │  QML Frontend │ │
@@ -133,7 +133,7 @@
         <h2 id="manager-pattern">The Manager Pattern</h2>
         <p>
           Every backend feature is encapsulated in a <strong>manager class</strong> that inherits from
-          <code>QObject</code>. This is the fundamental pattern used throughout OCTAVE:
+          <code>QObject</code>. This is the fundamental pattern used throughout coscar-OS:
         </p>
 
         <pre><code><span class="kw">from</span> PySide6.QtCore <span class="kw">import</span> QObject, Signal, Slot, Property
@@ -335,7 +335,7 @@ EmbeddedDhuItem {
         <!-- Threading -->
         <h2 id="threading">Threading Model</h2>
         <p>
-          OCTAVE's UI runs on the Qt main thread (event loop). All heavy I/O is offloaded to
+          coscar-OS's UI runs on the Qt main thread (event loop). All heavy I/O is offloaded to
           background threads to prevent UI freezes. Three patterns are used:
         </p>
 
@@ -545,10 +545,10 @@ IS_ANDROID = <span class="fn">hasattr</span>(sys, <span class="str">'getandroida
             <tr><th>Platform</th><th>Path</th></tr>
           </thead>
           <tbody>
-            <tr><td>Windows</td><td><code>%APPDATA%\OCTAVE\settingsConfigure.json</code></td></tr>
-            <tr><td>macOS</td><td><code>~/Library/Application Support/OCTAVE/settingsConfigure.json</code></td></tr>
-            <tr><td>Linux</td><td><code>~/.config/OCTAVE/settingsConfigure.json</code></td></tr>
-            <tr><td>Android</td><td><code>&lt;app_dir&gt;/OCTAVE/settingsConfigure.json</code></td></tr>
+            <tr><td>Windows</td><td><code>%APPDATA%\coscar-OS\settingsConfigure.json</code></td></tr>
+            <tr><td>macOS</td><td><code>~/Library/Application Support/coscar-OS/settingsConfigure.json</code></td></tr>
+            <tr><td>Linux</td><td><code>~/.config/coscar-OS/settingsConfigure.json</code></td></tr>
+            <tr><td>Android</td><td><code>&lt;app_dir&gt;/coscar-OS/settingsConfigure.json</code></td></tr>
           </tbody>
         </table>
 
@@ -564,7 +564,7 @@ IS_ANDROID = <span class="fn">hasattr</span>(sys, <span class="str">'getandroida
         <span class="file-path">backend/logging_config.py</span>
 
         <p>
-          OCTAVE uses Python's <code>logging</code> module with hierarchical loggers under the
+          coscar-OS uses Python's <code>logging</code> module with hierarchical loggers under the
           <code>octave.*</code> namespace. All loggers are obtained via <code>get_logger(__name__)</code>,
           which maps module paths to clean names:
         </p>

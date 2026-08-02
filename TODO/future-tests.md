@@ -55,7 +55,7 @@ def test_settings_persist_across_restart(tmp_path, monkeypatch):
     assert s2.themeSetting == "CosmicVoyager"
 ```
 
-Catches: someone renames a JSON key, someone removes a default, someone breaks migration logic when adding a new field. Users would otherwise only find this when they update OCTAVE and discover their saved settings got cleared — which is terrible.
+Catches: someone renames a JSON key, someone removes a default, someone breaks migration logic when adding a new field. Users would otherwise only find this when they update coscar-OS and discover their saved settings got cleared — which is terrible.
 
 **Bonus:** also test the migration path. Write an "old format" settings JSON file to the tmp dir first, construct `SettingsManager`, assert it reads cleanly and upgrades to the new format. This catches schema-evolution bugs.
 
@@ -173,7 +173,7 @@ Fiddly because of the thread pool — may need to monkeypatch `_executor.submit`
 - Unicode normalization quirks (combining characters, NFC vs NFD)
 - Extremely long strings (DoS protection for malformed tags)
 
-Assert the cleaned output. Prevents regressions in how OCTAVE displays song titles from badly-tagged MP3s — which is a surprisingly large fraction of real-world music libraries.
+Assert the cleaned output. Prevents regressions in how coscar-OS displays song titles from badly-tagged MP3s — which is a surprisingly large fraction of real-world music libraries.
 
 ### 7. pytest-qt signal assertion tests
 
