@@ -11,6 +11,7 @@ os.environ["QT_QUICK_CONTROLS_STYLE"] = "Basic"
 parser = argparse.ArgumentParser(description='coscar-OS Infotainment System')
 parser.add_argument('--debug', action='store_true', help='Enable debug logging')
 parser.add_argument('--profile', action='store_true', help='Enable performance monitor')
+parser.add_argument('--kiosk', action='store_true', help='Start fullscreen and allow closing only from Settings')
 args, _ = parser.parse_known_args()
 
 # Initialize logging FIRST (before other imports that might log)
@@ -64,6 +65,10 @@ engine = QQmlApplicationEngine()
 
 # Expose auto-scale to QML
 engine.rootContext().setContextProperty("screenAutoScale", auto_scale)
+# The installer uses this opt-in flag for an in-car kiosk deployment. Keeping
+# it as a context property lets the QML window enforce the close policy while
+# leaving normal desktop and development launches unchanged.
+engine.rootContext().setContextProperty("launchKioskMode", args.kiosk)
 
 # Register custom QML types
 qmlRegisterType(EmbeddedDhuItem, "OCTAVE.AndroidAuto", 1, 0, "EmbeddedDhuItem")

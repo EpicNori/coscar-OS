@@ -357,6 +357,18 @@ Flickable {
                         }
                     }
 
+                    SettingsButton {
+                        visible: pageRoot.mainWindow && pageRoot.mainWindow.kioskMode
+                        text: "Exit coscar-OS"
+                        Layout.preferredHeight: screenHeight.height
+                        Layout.minimumWidth: pageRoot.dp(110)
+                        tooltipText: "Close coscar-OS from kiosk mode"
+                        onClicked: {
+                            if (pageRoot.mainWindow && pageRoot.mainWindow.exitFromSettings)
+                                pageRoot.mainWindow.exitFromSettings()
+                        }
+                    }
+
                     Item { Layout.fillWidth: true } // Spacer
                 }
             }

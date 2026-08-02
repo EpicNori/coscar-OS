@@ -6,6 +6,7 @@ Cross-platform installer that handles dependencies and environment setup.
 Usage:
     python setup.py            # Setup and run the app
     python setup.py --no-run   # Setup only, don't launch
+    python setup.py --kiosk --autostart  # Fullscreen in-car mode + user autostart
 """
 
 import subprocess
@@ -14,6 +15,7 @@ import os
 import platform
 import shutil
 import time
+import plistlib
 
 # Ensure Unicode output works on Windows (cp1252 can't handle ✓/✗/→)
 if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
@@ -297,6 +299,69 @@ def get_python_path(venv_path):
         return os.path.join(venv_path, "Scripts", "python.exe")
     return os.path.join(venv_path, "bin", "python")
 
+def _desktop_exec_quote(value):
+    """Quote one argument for a freedesktop .desktop Exec line."""
+    value = str(value)
+    escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
+
+def install_autostart(venv_path, kiosk_mode=True):
+    """Install a per-user autostart entry for the current installation."""
+    python_path = get_python_path(venv_path)
+    main_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main.py")
+    arguments = [python_path, main_py]
+    if kiosk_mode:
+        arguments.append("--kiosk")
+
+    system = platform.system()
+    if system == "Windows":
+        import winreg
+
+        command = subprocess.list2cmdline(arguments)
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Run",
+            0,
+            winreg.KEY_SET_VALUE,
+        ) as key:
+            winreg.SetValueEx(key, "coscar-OS", 0, winreg.REG_SZ, command)
+        print("✓ User autostart enabled in Windows")
+        return
+
+    if system == "Darwin":
+        launch_agents = os.path.expanduser("~/Library/LaunchAgents")
+        os.makedirs(launch_agents, exist_ok=True)
+        plist_path = os.path.join(launch_agents, "io.epicnori.coscaros.plist")
+        payload = {
+            "Label": "io.epicnori.coscaros",
+            "ProgramArguments": arguments,
+            "RunAtLoad": True,
+        }
+        with open(plist_path, "wb") as plist_file:
+            plistlib.dump(payload, plist_file)
+        print(f"✓ User autostart enabled: {plist_path}")
+        return
+
+    if system == "Linux":
+        autostart_dir = os.path.expanduser("~/.config/autostart")
+        os.makedirs(autostart_dir, exist_ok=True)
+        desktop_path = os.path.join(autostart_dir, "coscar-OS.desktop")
+        exec_line = " ".join(_desktop_exec_quote(argument) for argument in arguments)
+        desktop_entry = (
+            "[Desktop Entry]\n"
+            "Type=Application\n"
+            "Name=coscar-OS\n"
+            f"Exec={exec_line}\n"
+            "Terminal=false\n"
+            "X-GNOME-Autostart-enabled=true\n"
+        )
+        with open(desktop_path, "w", encoding="utf-8") as desktop_file:
+            desktop_file.write(desktop_entry)
+        print(f"✓ User autostart enabled: {desktop_path}")
+        return
+
+    print(f"⚠ Autostart is not implemented for platform: {system}")
+
 def install_python_deps(venv_path):
     """Install Python dependencies."""
     print_step("Installing Python dependencies...")
@@ -314,14 +379,17 @@ def install_python_deps(venv_path):
         print("✗ Failed to install some dependencies")
         sys.exit(1)
 
-def run_app(venv_path):
+def run_app(venv_path, kiosk_mode=False):
     """Run the coscar-OS application."""
     print_header("Starting coscar-OS")
 
     python_path = get_python_path(venv_path)
     main_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), "main.py")
 
-    os.execv(python_path, [python_path, main_py])
+    command = [python_path, main_py]
+    if kiosk_mode:
+        command.append("--kiosk")
+    os.execv(python_path, command)
 
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -349,6 +417,10 @@ def main():
 
     # Install Python dependencies
     install_python_deps(venv_path)
+
+    kiosk_mode = "--kiosk" in sys.argv
+    if "--autostart" in sys.argv:
+        install_autostart(venv_path, kiosk_mode=kiosk_mode)
 
     print_header("Setup Complete!")
 
@@ -388,7 +460,7 @@ coscar-OS requires a display to run. Options:
             print("Skipping app launch - no display available.")
             print("Set up a display first, then run: python main.py")
         else:
-            run_app(venv_path)
+            run_app(venv_path, kiosk_mode=kiosk_mode)
 
 if __name__ == "__main__":
     main()

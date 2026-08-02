@@ -35,6 +35,16 @@ The project is a redesign and continuation of [RobDeGeorge/OCTAVE](https://githu
   expanding into the dedicated OBD pages.
 - Preserve the original OCTAVE attribution and MIT license.
 
+## Kiosk and startup surface
+
+- The production one-liner opts into a fullscreen kiosk mode and per-user
+  autostart; normal development launches remain windowed and closable.
+- In kiosk mode, the close action is intentionally available only at Settings
+  > Display > Window > Exit coscar-OS, so accidental window-manager closes do
+  not interrupt an in-car session.
+- Keep the exit action clearly labeled and touch-sized. It is a functional
+  control, not a decorative glass card.
+
 ## Wi-Fi update surface
 
 - The update control lives in Settings > Device > Home Wi-Fi Update.

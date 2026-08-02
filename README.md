@@ -108,16 +108,18 @@ Until the first release installer is published, the easiest cross-platform insta
 **Windows PowerShell**
 
 ```powershell
-if (!(Test-Path coscar-OS)) { git clone https://github.com/EpicNori/coscar-OS.git }; Set-Location coscar-OS; py setup.py
+if (!(Test-Path coscar-OS)) { git clone https://github.com/EpicNori/coscar-OS.git }; Set-Location coscar-OS; py setup.py --kiosk --autostart
 ```
 
 **macOS / Linux**
 
 ```bash
-[ -d coscar-OS ] || git clone https://github.com/EpicNori/coscar-OS.git; cd coscar-OS && python3 setup.py
+[ -d coscar-OS ] || git clone https://github.com/EpicNori/coscar-OS.git; cd coscar-OS && python3 setup.py --kiosk --autostart
 ```
 
-The setup process may ask for administrator access on Linux to install Qt and display dependencies. Use `--no-run` at the end if you want to install without launching the app.
+These kiosk install commands start coscar-OS fullscreen and register it for the current user's autostart. In kiosk mode, close the app from Settings > Display > Window > Exit coscar-OS. The setup process may ask for administrator access on Linux to install Qt and display dependencies. Use `--no-run` at the end if you want to install without launching the app.
+
+For a normal desktop/development install, run `python setup.py` without `--kiosk --autostart`.
 
 ### Updating from home Wi-Fi
 

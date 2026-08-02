@@ -8,6 +8,9 @@ ApplicationWindow {
     id: mainWindow
     visible: true
     title: deviceName
+    // Avoid a windowed frame before Component.onCompleted applies the saved
+    // state when the installer launched the app in kiosk mode.
+    visibility: kioskMode ? Window.FullScreen : Window.AutomaticVisibility
 
     // Store the system default font family at startup
     property string systemDefaultFont: ""
@@ -29,6 +32,16 @@ ApplicationWindow {
     property int clockSize: settingsManager ? settingsManager.clockSize : 18
     property string lastSettingsSection: settingsManager ? settingsManager.lastSettingsSection : "deviceSettings"
     property string fontSetting: settingsManager ? settingsManager.fontSetting : "System Default"
+
+    // Kiosk mode is opt-in through setup.py --kiosk. In this mode the window
+    // opens fullscreen and can only be closed through the Settings action.
+    property bool kioskMode: typeof launchKioskMode !== "undefined" && launchKioskMode
+    property bool closeRequestedFromSettings: false
+
+    function exitFromSettings() {
+        closeRequestedFromSettings = true
+        Qt.quit()
+    }
 
     // Album Art Colors - used by signal handlers to track changes
     property string lastAppliedAlbumArtColors: ""
@@ -101,6 +114,11 @@ ApplicationWindow {
 
     // Handle window close (force close / X button)
     onClosing: function(close) {
+        if (kioskMode && !closeRequestedFromSettings) {
+            console.warn("Kiosk mode: close requested outside Settings; ignoring request")
+            close.accepted = false
+            return
+        }
         console.log("Window closing - running cleanup...")
         if (mediaManager) {
             mediaManager._save_playback_state()
@@ -176,9 +194,9 @@ ApplicationWindow {
             // Initialize orientation
             isVerticalLayout = settingsManager.bottomBarOrientation === "side"
 
-            // Restore window state
+            // Kiosk mode always takes precedence over the saved desktop state.
             let savedState = settingsManager.get_window_state()
-            if (savedState === "fullscreen") {
+            if (kioskMode || savedState === "fullscreen") {
                 mainWindow.visibility = Window.FullScreen
             } else if (savedState === "maximized") {
                 mainWindow.visibility = Window.Maximized
