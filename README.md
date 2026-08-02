@@ -119,6 +119,10 @@ if (!(Test-Path coscar-OS)) { git clone https://github.com/EpicNori/coscar-OS.gi
 
 The setup process may ask for administrator access on Linux to install Qt and display dependencies. Use `--no-run` at the end if you want to install without launching the app.
 
+### Updating from home Wi-Fi
+
+Connect the car to your home Wi-Fi, then open Settings > Device > Home Wi-Fi Update. coscar-OS checks GitHub over HTTPS, downloads the latest main revision, verifies that the new Python entry point parses, and offers a restart. Updates are manual and roll back if the update fails.
+
 If you'd rather build it yourself, hack on the code, or run from a checkout, keep reading.
 
 ## Building from source

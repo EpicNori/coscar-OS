@@ -34,6 +34,8 @@ class NetworkManager(QObject):
     # Network status signals
     networkNameChanged = Signal(str)
     isConnectedChanged = Signal(bool)
+    connectionTypeChanged = Signal(str)       # "Wi-Fi", "Ethernet", or ""
+    isWifiConnectedChanged = Signal(bool)
 
     # Update check signals
     updateStatusChanged = Signal(str)       # "checking", "up-to-date", "update-available", "error"
@@ -52,6 +54,7 @@ class NetworkManager(QObject):
         super().__init__()
         self._network_name = ""
         self._is_connected = False
+        self._connection_type = ""
         self._update_status = ""
         self._update_message = ""
         self._remote_commit = ""
@@ -91,6 +94,15 @@ class NetworkManager(QObject):
     @Property(bool, notify=isConnectedChanged)
     def isConnected(self):
         return self._is_connected
+
+    @Property(str, notify=connectionTypeChanged)
+    def connectionType(self):
+        return self._connection_type
+
+    @Property(bool, notify=isWifiConnectedChanged)
+    def isWifiConnected(self):
+        """Whether the active connection is Wi-Fi."""
+        return self._connection_type == "Wi-Fi"
 
     @Property(str, notify=updateStatusChanged)
     def updateStatus(self):
@@ -164,13 +176,17 @@ class NetworkManager(QObject):
         self._pending_future = None
 
         if result_type == "network_status":
-            name, connected = result
+            name, connected, connection_type = result
             if name != self._network_name:
                 self._network_name = name
                 self.networkNameChanged.emit(name)
             if connected != self._is_connected:
                 self._is_connected = connected
                 self.isConnectedChanged.emit(connected)
+            if connection_type != self._connection_type:
+                self._connection_type = connection_type
+                self.connectionTypeChanged.emit(connection_type)
+                self.isWifiConnectedChanged.emit(self.isWifiConnected)
             # Auto-check for updates once on first successful connectivity
             if connected and not self._auto_update_checked:
                 self._auto_update_checked = True
@@ -193,7 +209,8 @@ class NetworkManager(QObject):
         """Blocking network check — runs on worker thread."""
         name = NetworkManager._get_network_name_sync()
         connected = NetworkManager._check_internet_sync()
-        return (name, connected)
+        connection_type = NetworkManager._get_connection_type_sync()
+        return (name, connected, connection_type)
 
     @staticmethod
     def _get_network_name_sync():
@@ -270,6 +287,69 @@ class NetworkManager(QObject):
         except Exception:
             pass
         return False
+
+    @staticmethod
+    def _get_connection_type_sync():
+        """Detect whether the active connection is Wi-Fi or Ethernet."""
+        system = platform.system()
+        try:
+            if system == "Linux":
+                result = subprocess.run(
+                    ['nmcli', '-t', '-f', 'TYPE,STATE', 'dev'],
+                    capture_output=True, text=True, timeout=5
+                )
+                if result.returncode == 0:
+                    for line in result.stdout.strip().split('\n'):
+                        fields = line.split(':')
+                        if len(fields) >= 2 and fields[1] == 'connected':
+                            if fields[0] in ('wifi', '802-11-wireless'):
+                                return "Wi-Fi"
+                            if fields[0] == 'ethernet':
+                                return "Ethernet"
+
+            elif system == "Darwin":
+                result = subprocess.run(
+                    ['networksetup', '-getairportnetwork', 'en0'],
+                    capture_output=True, text=True, timeout=5
+                )
+                if result.returncode == 0 and 'Current Wi-Fi Network' in result.stdout:
+                    return "Wi-Fi"
+                result = subprocess.run(
+                    ['ifconfig', 'en0'],
+                    capture_output=True, text=True, timeout=5
+                )
+                if result.returncode == 0 and 'status: active' in result.stdout:
+                    return "Ethernet"
+
+            elif system == "Windows":
+                result = subprocess.run(
+                    ['netsh', 'wlan', 'show', 'interfaces'],
+                    capture_output=True, text=True, timeout=5
+                )
+                lines = result.stdout.split('\n') if result.returncode == 0 else []
+                has_connected_state = any(
+                    line.strip().lower().startswith('state') and 'connected' in line.lower()
+                    for line in lines
+                )
+                has_ssid = any(
+                    line.strip().startswith('SSID') and 'BSSID' not in line
+                    and line.split(':', 1)[-1].strip()
+                    for line in lines
+                )
+                if has_connected_state and has_ssid:
+                    return "Wi-Fi"
+                result = subprocess.run(
+                    ['netsh', 'interface', 'show', 'interface'],
+                    capture_output=True, text=True, timeout=5
+                )
+                if result.returncode == 0:
+                    for line in result.stdout.split('\n'):
+                        if 'Connected' in line and 'Ethernet' in line:
+                            return "Ethernet"
+        except Exception as e:
+            logger.debug(f"Error getting connection type: {e}")
+
+        return ""
 
     @Slot()
     def refreshNetwork(self):
@@ -365,6 +445,23 @@ class NetworkManager(QObject):
         return ""
 
     # ==================== Self-Update ====================
+
+    @Slot()
+    def applyWifiUpdate(self):
+        """Apply the GitHub update only when the car is online over Wi-Fi."""
+        if not self.isWifiConnected:
+            self._self_update_status = "error"
+            self.selfUpdateStatusChanged.emit("error")
+            self._self_update_message = "Connect to your home Wi-Fi before updating"
+            self.selfUpdateMessageChanged.emit(self._self_update_message)
+            return
+        if not self._is_connected:
+            self._self_update_status = "error"
+            self.selfUpdateStatusChanged.emit("error")
+            self._self_update_message = "Wi-Fi is connected, but the internet is unavailable"
+            self.selfUpdateMessageChanged.emit(self._self_update_message)
+            return
+        self.applySelfUpdate()
 
     @staticmethod
     def _check_can_self_update():

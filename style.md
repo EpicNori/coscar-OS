@@ -34,3 +34,11 @@ The project is a redesign and continuation of [RobDeGeorge/OCTAVE](https://githu
 - Keep vehicle values glanceable: show fewer values with more whitespace before
   expanding into the dedicated OBD pages.
 - Preserve the original OCTAVE attribution and MIT license.
+
+## Wi-Fi update surface
+
+- The update control lives in Settings > Device > Home Wi-Fi Update.
+- Show the active SSID, Wi-Fi readiness, update progress, errors, and restart
+  action using the existing settings-card and status-color tokens.
+- Keep updates manual and clearly communicate that the car must have internet
+  access; do not start downloads automatically while driving.

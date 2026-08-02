@@ -111,6 +111,96 @@ Flickable {
         }
 
         SettingsCard {
+            cardId: "device_wifi_update"
+            title: "Home Wi-Fi Update"
+            description: "Update coscar-OS from GitHub while connected to your home Wi-Fi."
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: App.Spacing.rowSpacing
+
+                Text {
+                    Layout.fillWidth: true
+                    text: {
+                        if (!networkManager)
+                            return "Network status unavailable"
+                        if (!networkManager.isWifiConnected)
+                            return "Connect the car to your home Wi-Fi to enable updates."
+                        if (!networkManager.isConnected)
+                            return "Wi-Fi is connected, but internet access is unavailable."
+                        return "Ready to update over Wi-Fi: " + (networkManager.networkName || "connected network")
+                    }
+                    color: App.Style.secondaryTextColor
+                    font.pixelSize: App.Spacing.overallText * 0.85
+                    font.family: App.Style.fontFamily
+                    wrapMode: Text.WordWrap
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: App.Spacing.overallSpacing
+                    property bool confirmingWifiUpdate: false
+
+                    Timer {
+                        id: wifiUpdateConfirmResetTimer
+                        interval: 5000
+                        onTriggered: parent.confirmingWifiUpdate = false
+                    }
+
+                    SettingsButton {
+                        text: networkManager && networkManager.selfUpdateStatus === "fetching"
+                              ? "Updating..."
+                              : (parent.confirmingWifiUpdate ? "Confirm Wi-Fi Update" : "Update over Wi-Fi")
+                        buttonColor: parent.confirmingWifiUpdate ? App.Style.statusWarning : App.Style.accent
+                        height: dp(30)
+                        enabled: networkManager
+                                 && networkManager.isWifiConnected
+                                 && networkManager.isConnected
+                                 && networkManager.canSelfUpdate
+                                 && networkManager.selfUpdateStatus !== "fetching"
+                        onClicked: {
+                            if (parent.confirmingWifiUpdate) {
+                                parent.confirmingWifiUpdate = false
+                                networkManager.applyWifiUpdate()
+                            } else {
+                                parent.confirmingWifiUpdate = true
+                                wifiUpdateConfirmResetTimer.restart()
+                            }
+                        }
+                    }
+
+                    Text {
+                        text: "Second tap confirms replacing local files"
+                        color: App.Style.statusWarning
+                        font.pixelSize: App.Spacing.overallText * 0.75
+                        font.family: App.Style.fontFamily
+                        visible: parent.confirmingWifiUpdate
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+
+                    SettingsButton {
+                        text: "Restart Now"
+                        buttonColor: App.Style.statusSuccess
+                        height: dp(30)
+                        visible: networkManager && networkManager.selfUpdateStatus === "restart-required"
+                        onClicked: networkManager.restartApp()
+                    }
+                }
+
+                Text {
+                    Layout.fillWidth: true
+                    text: networkManager ? networkManager.selfUpdateMessage : ""
+                    color: networkManager && networkManager.selfUpdateStatus === "error"
+                           ? App.Style.statusError : App.Style.secondaryTextColor
+                    font.pixelSize: App.Spacing.overallText * 0.8
+                    font.family: App.Style.fontFamily
+                    wrapMode: Text.WordWrap
+                    visible: text !== ""
+                }
+            }
+        }
+
+        SettingsCard {
             cardId: "device_power"
             title: "Power"
 
