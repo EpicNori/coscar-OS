@@ -1,0 +1,490 @@
+name: Build OCTAVE
+
+on:
+  # Manual trigger from GitHub UI
+  workflow_dispatch:
+
+  # Lint + smoke tests on every push and PR to main
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ruff
+        run: pip install ruff==0.15.10
+
+      - name: Run ruff (warn-only — full ruleset has legacy noise)
+        run: ruff check . || true
+
+      - name: Enforce critical rules (bare except, undefined names)
+        run: ruff check . --select E722,F821
+
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxcb-xinerama0 \
+            libxcb-cursor0 \
+            libxkbcommon0 \
+            libgl1-mesa-glx \
+            libegl1 \
+            libpulse0
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run smoke tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: pytest tests/ -v
+
+  # ---------------------------------------------------------------------------
+  # C++ / CMake / Qt 6 builds (primary distribution path)
+  # ---------------------------------------------------------------------------
+
+  cpp-build-windows:
+    needs: [lint, test]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.3'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          modules: 'qtmultimedia qtnetworkauth qtserialport qtconnectivity'
+
+      - name: Install TagLib (vcpkg)
+        shell: bash
+        run: |
+          "$VCPKG_INSTALLATION_ROOT/vcpkg" install taglib:x64-windows
+
+      - name: Configure CMake
+        shell: bash
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
+            -DVCPKG_TARGET_TRIPLET=x64-windows
+
+      - name: Build
+        run: cmake --build build --config Release -j
+
+      - name: Deploy Qt runtime
+        shell: bash
+        run: |
+          mkdir -p dist/OCTAVE
+          # MSVC multi-config drops the binary in build/Release/; single-config in build/.
+          if [ -f build/Release/octave.exe ]; then
+            cp build/Release/octave.exe dist/OCTAVE/
+          else
+            cp build/octave.exe dist/OCTAVE/
+          fi
+          # Copy taglib runtime DLL alongside the .exe (vcpkg dynamic build).
+          cp "$VCPKG_INSTALLATION_ROOT"/installed/x64-windows/bin/tag.dll dist/OCTAVE/ 2>/dev/null || true
+          windeployqt --qmldir frontend --release dist/OCTAVE/octave.exe
+          # Inno Setup expects the binary at OCTAVE.exe (capitalized) per the .iss.
+          mv dist/OCTAVE/octave.exe dist/OCTAVE/OCTAVE.exe
+
+      - name: Build Windows installer (Inno Setup)
+        shell: pwsh
+        run: |
+          # Inno Setup 6 ships pre-installed on windows-latest runners as iscc.exe.
+          # Patch the .iss version to match the git tag (or 0.9.0 fallback for dispatches).
+          $version = $env:GITHUB_REF_NAME -replace '^v', ''
+          if ([string]::IsNullOrEmpty($version)) { $version = '0.9.0' }
+          (Get-Content build_scripts/installer_windows.iss) `
+            -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" |
+            Set-Content build_scripts/installer_windows.iss
+          # Compile from build_scripts/ so the relative paths in the .iss resolve.
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" build_scripts\installer_windows.iss
+          Get-ChildItem dist\
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: OCTAVE-Windows-cpp
+          path: dist/OCTAVE-*-windows-x86_64.exe
+          retention-days: 30
+          if-no-files-found: error
+
+  cpp-build-macos:
+    needs: [lint, test]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.3'
+          host: 'mac'
+          target: 'desktop'
+          modules: 'qtmultimedia qtnetworkauth qtserialport qtconnectivity'
+
+      - name: Install TagLib
+        run: brew install taglib pkg-config
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build -j
+
+      - name: Bundle .app + create DMG
+        run: |
+          # qt_add_executable produces lowercase 'octave.app'; rename for distribution.
+          mkdir -p dist
+          mv build/octave.app dist/OCTAVE.app
+          macdeployqt dist/OCTAVE.app -qmldir=frontend -dmg
+          # Rename to the unified scheme: OCTAVE-<version>-macos.dmg.
+          # Workflow runs on tag pushes only, so GITHUB_REF_NAME is always vX.Y.
+          VERSION="${GITHUB_REF_NAME#v}"
+          [ -z "$VERSION" ] && VERSION="0.0.0"
+          mv dist/OCTAVE.dmg "dist/OCTAVE-${VERSION}-macos.dmg"
+          ls -la dist/
+
+      - name: Upload macOS .app
+        uses: actions/upload-artifact@v4
+        with:
+          name: OCTAVE-macOS-cpp-App
+          path: dist/OCTAVE.app/
+          retention-days: 30
+
+      - name: Upload macOS .dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: OCTAVE-macOS-cpp-DMG
+          path: dist/OCTAVE-*-macos.dmg
+          retention-days: 30
+
+  cpp-build-linux:
+    needs: [lint, test]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake ninja-build pkg-config \
+            libtag1-dev libgl1-mesa-dev libegl1-mesa-dev \
+            libxcb-xinerama0 libxcb-cursor0 libxkbcommon-dev \
+            libpulse-dev libfuse2 libssl-dev wget file
+
+      - name: Install Qt 6
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.3'
+          host: 'linux'
+          target: 'desktop'
+          # qt5compat — frontend imports Qt5Compat.GraphicalEffects (drop-shadow,
+          # blur, etc.). qtquick3d / qtshadertools — frontend imports QtQuick3D
+          # and QtQuick.Effects, both of which pull qtshadertools transitively.
+          # Without these, linuxdeploy-plugin-qt can't bundle the modules and
+          # Main.qml fails with `module "..." is not installed` at runtime.
+          modules: 'qtmultimedia qtnetworkauth qtserialport qtconnectivity qt5compat qtquick3d qtshadertools'
+
+      - name: Build AppImage
+        env:
+          # install-qt-action puts qmake6 in $QT_ROOT_DIR/bin; point linuxdeploy-plugin-qt at it
+          # so it picks up Qt 6 modules instead of any system Qt 5 stub.
+          QMAKE: ${{ env.QT_ROOT_DIR }}/bin/qmake6
+          OCTAVE_VERSION: ${{ github.ref_name }}
+        run: bash packaging/linux/build-appimage.sh
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: OCTAVE-Linux-cpp-AppImage
+          path: dist/OCTAVE-*-linux-x86_64.AppImage
+          retention-days: 30
+          if-no-files-found: error
+
+  cpp-build-android:
+    needs: [lint, test]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Qt 6 (host)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.3'
+          host: 'linux'
+          target: 'desktop'
+          modules: 'qtmultimedia qtnetworkauth qtserialport qtconnectivity qtsensors qt5compat qtshadertools'
+
+      - name: Install Qt 6 (Android arm64)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.7.3'
+          host: 'linux'
+          target: 'android'
+          arch: 'android_arm64_v8a'
+          modules: 'qtmultimedia qtnetworkauth qtserialport qtconnectivity qtsensors qt5compat qtshadertools'
+
+      - name: Set up Android SDK + NDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install NDK r26b
+        run: |
+          sdkmanager --install "ndk;26.1.10909125" "platforms;android-33" "build-tools;33.0.2"
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/26.1.10909125" >> $GITHUB_ENV
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          # Maven Central / Google Maven artifacts pinned by android/build.gradle —
+          # cache them so repeat runs survive transient 429 rate limits and finish
+          # faster. Bust the cache when the gradle file changes.
+          key: gradle-${{ runner.os }}-${{ hashFiles('android/build.gradle', 'android/gradle.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Build ytmusic Python bundle
+        run: |
+          # OctaveMediaBridge.java extracts assets/python-packages/ytmusic-bundle.zip
+          # at first launch and runs ytmusic_search.py from it (the AAR-shipped
+          # Python 3.12 has no pip). Without this asset, YouTube Music search/
+          # streaming silently fails on the device.
+          set -e
+          python3 -m pip install --upgrade pip
+          bash scripts/build-android-pylib-bundle.sh
+          ls -la android/assets/python-packages/
+
+      - name: Dereference android/assets symlinks
+        run: |
+          # APKs do not support symlinks — entries get bundled as broken 0-byte
+          # files. android/assets/frontend is a symlink to ../../frontend on
+          # disk for dev convenience; replace it with a real copy before the
+          # APK build runs, otherwise QML asset loads (assets:/frontend/Main.qml)
+          # return empty and the app crashes on launch with "Failed to load
+          # Main.qml". Same fix for the scripts symlink.
+          set -e
+          cd android/assets
+          for link in frontend scripts; do
+            if [ -L "$link" ]; then
+              target=$(readlink -f "$link")
+              echo "Dereferencing $link -> $target"
+              rm "$link"
+              cp -RL "$target" "$link"
+            fi
+          done
+          ls -la
+          ls frontend | head
+
+      - name: Configure CMake (Android arm64)
+        run: |
+          # install-qt-action exports Qt6_DIR pointing at the android target install.
+          # Host Qt (for moc/rcc/qmlimportscanner) lives in the desktop install from the
+          # previous step — its base dir is exposed via QT_ROOT_DIR / IQTA_QT_PATH.
+          HOST_QT="${IQTA_QT_PATH:-$RUNNER_WORKSPACE/Qt/6.7.3/gcc_64}"
+          # If install-qt-action used a different host layout, fall back to a glob.
+          if [ ! -d "$HOST_QT" ]; then
+            HOST_QT=$(find "$RUNNER_WORKSPACE/Qt" -maxdepth 3 -type d -name 'gcc_64' | head -n1)
+          fi
+          echo "Using HOST_QT=$HOST_QT"
+          ls "$HOST_QT/bin" | head
+
+          # install-qt-action exports QT_ROOT_DIR for the Android target; Qt6_DIR is
+          # not set in the env across steps. The toolchain file lives at
+          # $QT_ROOT_DIR/lib/cmake/Qt6/qt.toolchain.cmake.
+          if [ -z "$QT_ROOT_DIR" ] || [ ! -f "$QT_ROOT_DIR/lib/cmake/Qt6/qt.toolchain.cmake" ]; then
+            QT_ROOT_DIR=$(find "$RUNNER_WORKSPACE/Qt" -maxdepth 3 -type d -name 'android_arm64_v8a' | head -n1)
+          fi
+          echo "Using QT_ROOT_DIR=$QT_ROOT_DIR"
+          ls "$QT_ROOT_DIR/lib/cmake/Qt6/qt.toolchain.cmake"
+
+          cmake -S . -B build-android \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE="$QT_ROOT_DIR/lib/cmake/Qt6/qt.toolchain.cmake" \
+            -DANDROID_ABI=arm64-v8a \
+            -DANDROID_PLATFORM=android-30 \
+            -DQT_HOST_PATH="$HOST_QT"
+
+      - name: "Build APK (with retry on Maven 429 / network blips)"
+        run: |
+          # Maven Central rate-limits GH Actions runner IPs intermittently
+          # (HTTP 429 on the youtubedl-android AAR fetch). Retry the whole
+          # build a few times with backoff before giving up.
+          set -e
+          attempt=1
+          max_attempts=4
+          delay=20
+          while true; do
+            echo "::group::APK build attempt $attempt/$max_attempts"
+            if cmake --build build-android --target apk -j; then
+              echo "::endgroup::"
+              echo "APK build succeeded on attempt $attempt"
+              break
+            fi
+            echo "::endgroup::"
+            if [ $attempt -ge $max_attempts ]; then
+              echo "APK build failed after $max_attempts attempts"
+              exit 1
+            fi
+            echo "Attempt $attempt failed; sleeping ${delay}s before retry"
+            sleep $delay
+            delay=$((delay * 2))
+            attempt=$((attempt + 1))
+          done
+
+      - name: Sign APK with test keystore
+        run: |
+          # Quick-fix signing: generate a fresh keystore each release. This makes
+          # the APK installable on real devices, but updates from one release
+          # to the next will fail (different signing key) — users must
+          # uninstall before installing a newer version.
+          #
+          # PROPER FIX (TODO): persist a single keystore as a GitHub Secret
+          # (base64-encoded), decode in CI, and sign with it. Then over-the-air
+          # updates work and you have a stable signing identity for Play Store.
+          set -e
+
+          # 1. Generate keystore
+          keytool -genkeypair -v \
+            -keystore octave.keystore \
+            -alias octave \
+            -keyalg RSA -keysize 2048 \
+            -validity 10000 \
+            -storepass octavepass \
+            -keypass octavepass \
+            -dname "CN=OCTAVE Test Build, O=WayBetterSolutions, C=US"
+
+          # 2. Locate unsigned APK (gradle drops it under build/outputs/apk/release/)
+          UNSIGNED=$(find build-android -path '*/build/outputs/apk/release/*-unsigned.apk' | head -n1)
+          if [ -z "$UNSIGNED" ]; then
+            UNSIGNED=$(find build-android -name '*-unsigned.apk' | head -n1)
+          fi
+          if [ -z "$UNSIGNED" ]; then
+            echo "ERROR: no unsigned APK found"
+            find build-android -name '*.apk'
+            exit 1
+          fi
+          echo "Signing: $UNSIGNED"
+
+          # 3. zipalign (required before apksigner)
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/33.0.2"
+          "$BUILD_TOOLS/zipalign" -v -p 4 "$UNSIGNED" octave-aligned.apk
+
+          # 4. Sign with apksigner — explicitly enable v1, v2, AND v3 signature
+          # schemes. apksigner's default with minSdk>=28 is v3-only, but many
+          # Android package installers (especially sideload via Files app)
+          # report "package appears to be invalid" on v3-only APKs. Forcing
+          # v1+v2+v3 maximizes installer compatibility.
+          "$BUILD_TOOLS/apksigner" sign \
+            --ks octave.keystore \
+            --ks-pass pass:octavepass \
+            --key-pass pass:octavepass \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --out octave-signed.apk \
+            octave-aligned.apk
+
+          # 5. Verify
+          "$BUILD_TOOLS/apksigner" verify --verbose octave-signed.apk
+
+          # 6. Stage with a clean name for upload (unified scheme: strip leading 'v').
+          mkdir -p dist
+          VERSION="${GITHUB_REF_NAME#v}"
+          [ -z "$VERSION" ] && VERSION="dev"
+          cp octave-signed.apk "dist/OCTAVE-${VERSION}-android-arm64-v8a.apk"
+          ls -la dist/
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: OCTAVE-Android-APK
+          path: dist/OCTAVE-*-android-arm64-v8a.apk
+          retention-days: 30
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Release: bundle the C++ artifacts into a single GitHub Release.
+  # The Python tree is a developer/tinkerer backend (run via setup.py / main.py)
+  # and is not packaged for end-user distribution — only C++ ships.
+  # ---------------------------------------------------------------------------
+
+  release:
+    needs:
+      - cpp-build-windows
+      - cpp-build-macos
+      - cpp-build-linux
+      - cpp-build-android
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Four installers, one per platform. The macOS .app.zip is produced
+          # by the build job as a workflow artifact (downloadable from the run
+          # page) but is not attached to the public Release — keeps the
+          # Releases page tidy.
+          files: |
+            artifacts/OCTAVE-Windows-cpp/OCTAVE-*-windows-x86_64.exe
+            artifacts/OCTAVE-macOS-cpp-DMG/OCTAVE-*-macos.dmg
+            artifacts/OCTAVE-Linux-cpp-AppImage/OCTAVE-*-linux-x86_64.AppImage
+            artifacts/OCTAVE-Android-APK/OCTAVE-*-android-arm64-v8a.apk
+          generate_release_notes: true

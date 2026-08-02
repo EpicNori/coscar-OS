@@ -1,0 +1,95 @@
+venv/
+__pycache__/
+*.pyc
+backend/temp/
+.claude/
+
+# Build artifacts
+dist/
+build/
+build-appimage/
+AppDir/
+packaging/linux/tools/
+*.spec.bak
+appimagetool-*.AppImage
+*.AppImage
+
+# Android build artifacts
+*.apk
+*.aab
+.buildozer/
+/buildozer.spec
+!deployment/buildozer.spec
+deployment/wheels/*
+!deployment/wheels/.gitkeep
+deployment/.buildozer/
+build-android/
+aqtinstall.log
+build-android-configure.log
+# Regenerate via scripts/build-android-pylib-bundle.sh
+android/assets/python-packages/ytmusic-bundle.zip
+
+# Spotify credentials and cache
+backend/settingsConfigure.json
+backend/.spotify_token_cache
+
+# Bundled scrcpy binaries (downloaded via scripts/download_scrcpy.py)
+tools/scrcpy/*
+tools/scrcpy-*/
+!tools/scrcpy/LICENSE
+
+# Generated protobuf files (regenerate with compile_protos.py)
+backend/android_auto/proto/aap_protobuf/**/*_pb2.py
+
+# Developer mode tools (completely isolated from main codebase)
+dev/
+
+# Old/extra virtual environments
+venv_old_linux/
+
+# Android Auto SSL certificates (generated locally)
+backend/android_auto/certs/*.key
+backend/android_auto/certs/*.crt
+backend/android_auto/certs/*.pem
+
+# Temp files (editor swap files, crash recovery, etc.)
+*.tmp
+*.tmp.*
+*~
+*.swp
+*.swo
+*.bak
+
+# Performance profiling (lives in dev/perf/)
+backend/perf_monitor.py
+backend/perf_patches.py
+backend/command_server.py
+
+# MCP config
+.mcp.json
+
+# Personal notes / scratch (hardware MACs, dev-only creds, etc.)
+.private-notes.md
+
+# C++ build artifacts
+.qt/
+*.o
+*.a
+*.so
+*.dylib
+*.obj
+*.lib
+*.dll
+*.exe
+*.moc
+moc_*.cpp
+qrc_*.cpp
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# CAD placeholders from the upstream Git LFS archive; the target repository has no LFS budget.
+hardware/2003-jeep-tj/media-console/*.STL
+hardware/2003-jeep-tj/media-console/*.SLDPRT
