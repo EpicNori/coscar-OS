@@ -91,72 +91,282 @@ If you want a head unit that runs **on its own** instead of a screen that mirror
 - 100+ user-configurable settings, all persisted to disk
 - Custom gauge primitives and dashboard system — build your own and drop them in
 
-## Get coscar-OS
+## Installation guide
 
-The fastest way to try coscar-OS is to grab the pre-built binary for your OS from the [Releases](https://github.com/EpicNori/coscar-OS/releases) page and give it a spin — no toolchain, no build, no Python venv. One installer per platform:
+There are three ways to install coscar-OS. Choose the one that matches what you want to do:
 
-- **Windows:** `coscar-OS-<version>-windows-x86_64.exe` — run the installer.
-- **macOS:** `coscar-OS-<version>-macos.dmg` — open, drag to Applications.
-- **Linux:** `coscar-OS-<version>-linux-x86_64.AppImage` — `chmod +x` and run. Works on Ubuntu 22.04+, Debian, Mint, Fedora, openSUSE, and Arch.
-  - Arch users may need `fuse2`: `sudo pacman -S fuse2`. Alternative without FUSE: `./coscar-OS-*.AppImage --appimage-extract-and-run`.
-- **Android:** `coscar-OS-<version>-android-arm64-v8a.apk` — sideload (the released APK uses a per-build keystore, so updates require uninstalling the previous version).
+1. **Pre-built release:** easiest for using coscar-OS as an end-user application.
+2. **Python source install:** recommended for Raspberry Pi projects, hardware experiments, and Python/QML development.
+3. **C++ source build:** recommended when you are working on the native application or creating a distributable desktop/mobile build. The complete toolchain matrix is in [BUILD.md](BUILD.md).
 
-### One-line source install
+### Before you install
 
-Until the first release installer is published, the easiest cross-platform install is to clone the repository and let `setup.py` create the virtual environment and install dependencies:
+#### Supported systems
+
+- Windows 10 or later, 64-bit
+- macOS 10.14 or later
+- Linux distributions with a working desktop session, including Debian/Ubuntu, Fedora, Arch, and Raspberry Pi OS
+- Android arm64-v8a for the released APK/build path
+
+The Python backend requires **Python 3.10 or 3.11**. The repository metadata intentionally limits it to `<3.12`; although the legacy installer check accepts some older Python versions, Python 3.10/3.11 is the supported range for the current dependency set.
+
+You also need:
+
+- Git, if installing from source
+- An active display session for the graphical application; SSH-only and headless sessions cannot launch the normal UI without additional display forwarding
+- Internet access during installation so pip can download Python packages
+- Permission to install system packages on Linux; `setup.py` may invoke `sudo` for Qt, graphics, audio, X11, and input libraries
+
+Do not run the installer as root. Run it as your normal user and allow the Linux package manager to request elevated access only when needed.
+
+### Option 1: Install a pre-built release
+
+Download artifacts only from the official [GitHub Releases page](https://github.com/EpicNori/coscar-OS/releases). A release may contain these platform packages:
+
+- **Windows:** `coscar-OS-<version>-windows-x86_64.exe` — run the installer and follow the wizard.
+- **macOS:** `coscar-OS-<version>-macos.dmg` — open the disk image and drag the application to Applications.
+- **Linux:** `coscar-OS-<version>-linux-x86_64.AppImage` — make it executable and start it:
+
+  ```bash
+  chmod +x coscar-OS-*.AppImage
+  ./coscar-OS-*.AppImage
+  ```
+
+  Arch users may need FUSE 2:
+
+  ```bash
+  sudo pacman -S fuse2
+  ```
+
+  If FUSE is unavailable, use the AppImage fallback:
+
+  ```bash
+  ./coscar-OS-*.AppImage --appimage-extract-and-run
+  ```
+
+- **Android:** `coscar-OS-<version>-android-arm64-v8a.apk` — copy the APK to the device and install it through the file manager. Android may require enabling “Install unknown apps” for the file manager being used.
+
+  The current CI release process creates a fresh signing key per build. Consequently, installing a newer APK may require uninstalling the previous coscar-OS APK first; uninstalling removes the app’s local data unless Android offers a backup/restore option.
+
+If no compatible artifact is available for your device, use the Python or C++ source installation below.
+
+### Option 2: Install the Python backend from source
+
+This is the most useful path for a Raspberry Pi, a desktop development checkout, or custom hardware. The installer creates a local `venv` directory, upgrades pip, installs everything from `requirements.txt`, and then optionally launches the application.
+
+#### Step 1 — Install prerequisites
+
+Install Git and Python 3.10 or 3.11 using your operating system’s normal package manager.
+
+**Windows** — install Python from [python.org](https://www.python.org/downloads/windows/) and enable the Python Launcher during setup. Confirm that PowerShell can find it:
+
+```powershell
+py --version
+git --version
+```
+
+**macOS** — install the Xcode Command Line Tools and Python 3.11. Homebrew is optional, but the following is convenient if it is already installed:
+
+```bash
+xcode-select --install
+brew install python@3.11 git
+python3.11 --version
+git --version
+```
+
+**Debian/Ubuntu/Raspberry Pi OS** — install Python, its virtual-environment module, and Git. Package names vary by distribution; on systems that provide Python 3.11 directly:
+
+```bash
+sudo apt update
+sudo apt install -y git python3.11 python3.11-venv
+python3.11 --version
+git --version
+```
+
+If your distribution provides the supported interpreter as `python3` rather than `python3.11`, use that command consistently in the remaining steps. On Fedora, the equivalent prerequisite command is usually `sudo dnf install git python3.11`; on Arch, use `sudo pacman -S --needed git python`.
+
+#### Step 2 — Clone the repository
+
+Run these commands from the directory where you keep projects:
 
 **Windows PowerShell**
 
 ```powershell
-if (!(Test-Path coscar-OS)) { git clone https://github.com/EpicNori/coscar-OS.git }; Set-Location coscar-OS; py setup.py --kiosk --autostart
+git clone https://github.com/EpicNori/coscar-OS.git
+Set-Location coscar-OS
 ```
 
 **macOS / Linux**
 
 ```bash
-[ -d coscar-OS ] || git clone https://github.com/EpicNori/coscar-OS.git; cd coscar-OS && python3 setup.py --kiosk --autostart
+git clone https://github.com/EpicNori/coscar-OS.git
+cd coscar-OS
 ```
 
-These kiosk install commands start coscar-OS fullscreen and register it for the current user's autostart. In kiosk mode, close the app from Settings > Display > Window > Exit coscar-OS. The setup process may ask for administrator access on Linux to install Qt and display dependencies. Use `--no-run` at the end if you want to install without launching the app.
+#### Step 3 — Run the automated installer
 
-For a normal desktop/development install, run `python setup.py` without `--kiosk --autostart`.
+Use `--no-run` for the first installation so that errors are easier to read and you can verify the setup before launching the UI.
 
-### Updating from home Wi-Fi
+**Windows PowerShell**
 
-Connect the car to your home Wi-Fi, then open Settings > Device > Home Wi-Fi Update. coscar-OS checks GitHub over HTTPS, downloads the latest main revision, verifies that the new Python entry point parses, and offers a restart. Updates are manual and roll back if the update fails.
+```powershell
+py -3.11 setup.py --no-run
+```
 
-If you'd rather build it yourself, hack on the code, or run from a checkout, keep reading.
+**macOS**
 
-## Building from source
+```bash
+python3.11 setup.py --no-run
+```
 
-If you just want to run the app, use the pre-built download above. Building from source is for hacking on coscar-OS — the Python backend is the fastest dev loop:
+**Linux / Raspberry Pi OS**
+
+```bash
+python3.11 setup.py --no-run
+```
+
+On Linux, `setup.py` detects Debian/Ubuntu, Fedora/RHEL-family, Arch-family, or Raspberry Pi environments and attempts to install the required system libraries. It may ask for your sudo password. The Python packages are installed into `venv`, not into the global Python installation.
+
+#### Step 4 — Start the application
+
+Calling the virtual-environment interpreter directly is reliable and avoids accidentally using a different Python installation.
+
+**Windows PowerShell**
+
+```powershell
+.\venv\Scripts\python.exe main.py
+```
+
+**macOS / Linux**
+
+```bash
+./venv/bin/python main.py
+```
+
+For verbose diagnostic logging, add `--debug`:
+
+```bash
+./venv/bin/python main.py --debug
+```
+
+On Windows, use `.\venv\Scripts\python.exe main.py --debug` instead.
+
+You can also activate the environment first:
+
+```bash
+source venv/bin/activate            # macOS / Linux
+python main.py
+```
+
+```powershell
+.\venv\Scripts\Activate.ps1       # Windows PowerShell
+python main.py
+```
+
+#### Installer modes
+
+`setup.py` supports these modes:
+
+| Command | What it does |
+|---|---|
+| `python setup.py` | Installs/updates the environment and launches the normal windowed app. |
+| `python setup.py --no-run` | Installs/updates the environment without launching the app. |
+| `python setup.py --kiosk` | Launches the app fullscreen for an in-car display. |
+| `python setup.py --kiosk --autostart` | Installs kiosk mode and registers coscar-OS to start for the current user at login. |
+| `python setup.py --autostart --no-run` | Registers normal windowed autostart without launching during setup. |
+| `python main.py --debug` | Starts an already-installed environment with verbose logging. |
+
+On Windows, replace `python` in setup commands with `py -3.11` if multiple Python versions are installed. On macOS/Linux, replace it with `python3.11` when that is the command that points to the supported interpreter.
+
+In kiosk mode, close the application through **Settings → Display → Window → Exit coscar-OS**. Autostart is installed per user and does not require a system-wide service.
+
+#### Optional manual installation
+
+Use this only when you do not want `setup.py` to manage Linux system packages. Install the required Qt/display/audio libraries yourself first, then run:
+
+```bash
+python3.11 -m venv venv
+source venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python main.py
+```
+
+On Windows, use `py -3.11 -m venv venv`, activate with `.\venv\Scripts\Activate.ps1`, and run the same pip/application commands. The repository’s `requirements.txt` is the source-install dependency list; `pyproject.toml` documents the supported Python range and project metadata.
+
+### Option 3: Build the native C++ application
+
+The native build requires **CMake 3.21+**, **Qt 6.7.3**, a platform compiler, and (on Windows) the vcpkg `taglib` dependency. The shortest desktop build is:
 
 ```bash
 git clone https://github.com/EpicNori/coscar-OS.git
 cd coscar-OS
-python setup.py
-```
-
-`setup.py` detects your OS, installs dependencies, builds a virtualenv, and launches the app. Pass `--no-run` to install without launching.
-
-After setup:
-
-```bash
-source venv/bin/activate            # Windows: venv\Scripts\activate
-python main.py                       # normal run
-python main.py --debug               # verbose logging
-python -m dev.main_dev               # simulated OBD + keyboard controls
-```
-
-### Running the C++ Build
-
-```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j
-./build/octave
 ```
 
-Full build matrix (9 targets including iOS, Android, Flatpak, and app store variants) lives in [BUILD.md](BUILD.md).
+Run `./build/octave` on Linux/macOS. On Visual Studio multi-config builds, run `build\\Debug\\octave.exe` or `build\\Release\\octave.exe` on Windows. For platform-specific Qt installation, AppImage packaging, Windows installers, Android APKs, and CI-matching versions, follow [BUILD.md](BUILD.md).
+
+### First-run configuration
+
+After the application opens, configure hardware and services from **Settings**. Most settings are stored per user in these locations:
+
+| Platform | Configuration directory |
+|---|---|
+| Windows | `%APPDATA%\\coscar-OS` |
+| macOS | `~/Library/Application Support/coscar-OS` |
+| Linux / Raspberry Pi OS | `${XDG_CONFIG_HOME:-~/.config}/coscar-OS` |
+
+#### Spotify
+
+Spotify is optional. To enable it:
+
+1. Create a Spotify application in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+2. Add this exact redirect URI to that application: `http://127.0.0.1:8888/callback`.
+3. Open **Settings → Media**, enter the Spotify Client ID and Client Secret, and save them.
+4. Start the Spotify authentication flow and approve access in the browser.
+5. Keep Spotify open on at least one available Spotify Connect device for playback control.
+
+Never commit the Client Secret, token cache, or settings directory to Git. coscar-OS stores the Spotify Client ID and Client Secret in its per-user settings; the OAuth token cache uses the operating-system keyring when available.
+
+#### OBD-II and sensors
+
+OBD-II, ESP32, BerryIMU, and gesture hardware are optional. Install the application and confirm that the normal UI works before connecting vehicle hardware. Then configure the relevant port or device in Settings. Do not test a new adapter while driving; use a parked vehicle and follow the adapter manufacturer’s electrical and safety instructions.
+
+#### YouTube downloads
+
+YouTube downloads are optional and can be affected by network reputation, regional restrictions, or bot detection. See [YouTube downloads failing?](#youtube-downloads-failing-check-your-vpn-first) for the supported cookie-file fallback. Treat `youtube_cookies.txt` as sensitive: it contains session cookies and must never be committed or shared.
+
+### Updating, resetting, and uninstalling
+
+To update a source checkout, stop coscar-OS first and run:
+
+```bash
+git pull --ff-only
+./venv/bin/python setup.py --no-run
+```
+
+Use `.\\venv\\Scripts\\python.exe setup.py --no-run` on Windows. The installer reuses a valid virtual environment and reinstalls the current requirements. If the environment was copied from another operating system or has a broken interpreter, `setup.py` may recreate it; close all coscar-OS/Python processes first.
+
+To reset application settings, exit coscar-OS and back up, then remove only the per-user configuration directory listed above. This resets credentials, themes, dashboards, and device settings; it does not change the Git checkout. To remove a source installation, delete the checkout after disabling its per-user autostart entry. Use your operating system’s normal uninstall mechanism for pre-built packages.
+
+### Troubleshooting installation
+
+| Symptom | Fix |
+|---|---|
+| `python` or `py` is not recognized | Install Python 3.10/3.11, reopen the terminal, and verify `python --version`, `python3.11 --version`, or `py --version`. |
+| `No module named PySide6` or another dependency | Run the app with the venv interpreter: `./venv/bin/python main.py` or `.\\venv\\Scripts\\python.exe main.py`. If needed, rerun `setup.py --no-run`. |
+| `ensurepip`/venv creation fails on Linux | Install the matching venv package, for example `sudo apt install python3.11-venv`, then rerun setup. |
+| Qt platform/plugin/display errors | Start from a real desktop session. For WSL, use WSLg on Windows 11, configure an X server on Windows 10, or run directly on Windows. |
+| Linux packages fail during setup | Install the missing packages with the detected package manager, then rerun `python3.11 setup.py --no-run`. Do not ignore a failed Qt, OpenGL, XCB, or audio dependency installation. |
+| Spotify authentication returns to the wrong page | Confirm the redirect URI is exactly `http://127.0.0.1:8888/callback`, including the address and port, and make sure a local firewall is not blocking the callback. |
+| A new Android APK says it cannot update | Uninstall the previous per-build-signed APK, then install the new APK. This removes the previous app data. |
+
+### Updating from home Wi-Fi
+
+Connect the car to your home Wi-Fi, then open **Settings → Device → Home Wi-Fi Update**. coscar-OS checks GitHub over HTTPS, downloads the latest `main` revision, verifies that the new Python entry point parses, and offers a restart. Updates are manual and roll back if the update fails.
+
+If you are developing the project, also review [BUILD.md](BUILD.md), the [wiki](wiki/index.html), and [docs/GAUGE_AUTHORING.md](docs/GAUGE_AUTHORING.md).
 
 ### YouTube downloads failing? Check your VPN first.
 
@@ -192,7 +402,7 @@ You don't have to fork to make coscar-OS yours — most of the customization is 
 
 ## System Requirements
 
-- **Python** 3.8+ (for the Python backend) / **Qt 6** + **CMake 3.16+** (for C++)
+- **Python** 3.10 or 3.11 (for the Python backend) / **Qt 6.7.3** + **CMake 3.21+** (for C++)
 - **OS:** Windows 10+, macOS 10.14+, Linux (Debian / Arch / Fedora), Raspberry Pi OS, Android
 
 ## Roadmap
