@@ -139,6 +139,11 @@ set -e; [ -f coscar-OS/setup.py ] || { test ! -e coscar-OS || { echo 'The folder
 
 For a normal windowed install, remove `--kiosk --autostart` from the final setup command.
 
+When this command is run through SSH/PuTTY without a graphical display, setup
+finishes the download, dependencies, and autostart registration, then skips
+the immediate GUI launch. coscar-OS starts fullscreen automatically at the
+next desktop login.
+
 ### Option 1: Install a pre-built release
 
 Download artifacts only from the official [GitHub Releases page](https://github.com/EpicNori/coscar-OS/releases). A release may contain these platform packages:

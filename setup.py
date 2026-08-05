@@ -454,11 +454,17 @@ coscar-OS requires a display to run. Options:
 3. Run on Windows directly instead of WSL
 """)
 
-    # Run the app unless --no-run flag is passed
+    # Run the app unless --no-run flag is passed. A normal SSH/PuTTY session
+    # on Linux has no display; installation and autostart setup should still
+    # complete successfully, but the GUI must wait for the desktop session.
     if "--no-run" not in sys.argv:
-        if wsl and not check_display():
-            print("Skipping app launch - no display available.")
-            print("Set up a display first, then run: python main.py")
+        headless_unix = plat in ("linux", "raspberry", "macos") and not check_display()
+        if headless_unix:
+            print("Skipping app launch - no graphical display available in this session.")
+            if "--autostart" in sys.argv:
+                print("Autostart is configured; coscar-OS will start with the next desktop session.")
+            else:
+                print("Start it later from the desktop with: python main.py")
         else:
             run_app(venv_path, kiosk_mode=kiosk_mode)
 
