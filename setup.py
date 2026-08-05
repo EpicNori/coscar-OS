@@ -206,8 +206,8 @@ def install_linux_deps():
 def check_python_version():
     """Check if Python version is adequate."""
     version = sys.version_info
-    if version.major < 3 or (version.major == 3 and version.minor < 8):
-        print(f"✗ Python 3.8+ required, found {version.major}.{version.minor}")
+    if version.major != 3 or version.minor not in (10, 11):
+        print(f"Python 3.10 or 3.11 required, found {version.major}.{version.minor}")
         sys.exit(1)
     print(f"✓ Python {version.major}.{version.minor}.{version.micro}")
 

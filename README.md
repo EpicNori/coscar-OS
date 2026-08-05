@@ -112,12 +112,32 @@ The Python backend requires **Python 3.10 or 3.11**. The repository metadata int
 
 You also need:
 
-- Git, if installing from source
+- Git, if you want to work from a Git checkout; the one-line archive installer below does not require Git
 - An active display session for the graphical application; SSH-only and headless sessions cannot launch the normal UI without additional display forwarding
 - Internet access during installation so pip can download Python packages
 - Permission to install system packages on Linux; `setup.py` may invoke `sudo` for Qt, graphics, audio, X11, and input libraries
 
 Do not run the installer as root. Run it as your normal user and allow the Linux package manager to request elevated access only when needed.
+
+### One-line download and install
+
+These commands download the current `main` source archive directly from GitHub,
+so Git does not need to be installed first. Python 3.10 or 3.11 must already be
+available. The kiosk variant starts fullscreen and enables per-user autostart.
+
+**Windows PowerShell**
+
+```powershell
+$ErrorActionPreference='Stop'; $repo='coscar-OS'; if (!(Test-Path -LiteralPath (Join-Path $repo 'setup.py'))) { if (Test-Path -LiteralPath $repo) { throw "The folder coscar-OS already exists but is not a coscar-OS checkout." }; $zip=Join-Path $env:TEMP 'coscar-OS-main.zip'; $extract=Join-Path $env:TEMP 'coscar-OS-download'; Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue; Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/EpicNori/coscar-OS/archive/refs/heads/main.zip' -OutFile $zip; Expand-Archive -LiteralPath $zip -DestinationPath $extract -Force; Move-Item -LiteralPath (Join-Path $extract 'coscar-OS-main') -Destination $repo; Remove-Item -LiteralPath $zip,$extract -Recurse -Force }; Set-Location $repo; py -3.11 setup.py --kiosk --autostart
+```
+
+**macOS / Linux**
+
+```bash
+set -e; [ -f coscar-OS/setup.py ] || { test ! -e coscar-OS || { echo 'The folder coscar-OS already exists but is not a coscar-OS checkout.' >&2; exit 1; }; tmp="$(mktemp -d)"; curl -fL 'https://github.com/EpicNori/coscar-OS/archive/refs/heads/main.tar.gz' | tar -xz -C "$tmp"; mv "$tmp/coscar-OS-main" coscar-OS; rm -rf "$tmp"; }; cd coscar-OS && python3.11 setup.py --kiosk --autostart
+```
+
+For a normal windowed install, remove `--kiosk --autostart` from the final setup command.
 
 ### Option 1: Install a pre-built release
 
