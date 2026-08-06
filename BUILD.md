@@ -43,6 +43,31 @@ cmake --build build -j
 - **Ninja** (recommended on Linux/macOS for faster builds — `cmake -G Ninja`).
 - A C++17 compiler (GCC 11+/Clang 14+/MSVC 2022).
 
+### Raspberry Pi 4/5 (recommended installation path)
+
+The primary hardware target is a Raspberry Pi 4 or 5 running 64-bit
+Raspberry Pi OS. Use the Python backend for the shortest installation path:
+
+```bash
+sudo apt update
+sudo apt install -y git python3.11 python3.11-venv python3-pip
+git clone https://github.com/EpicNori/coscar-OS.git
+cd coscar-OS
+python3.11 setup.py --kiosk --autostart --no-run
+./venv/bin/python main.py --kiosk
+```
+
+The setup script identifies the Pi model, installs the Qt display/audio
+libraries, creates a local virtual environment, and keeps Python packages out
+of the system interpreter. Raspberry Pi OS 64-bit is strongly recommended;
+32-bit installations may not have compatible wheels for every PySide6/media
+dependency.
+
+For a native C++ build, install the Linux Qt development packages from the
+next section and run `packaging/linux/build-appimage.sh` from the repository
+root. The script emits an ARM64 AppImage on a 64-bit Pi and an x86_64
+AppImage on an x86_64 host.
+
 ### Linux
 
 ```bash

@@ -101,6 +101,29 @@ There are three ways to install coscar-OS. Choose the one that matches what you 
 
 ### Before you install
 
+#### Primary target: Raspberry Pi 4 and 5
+
+The supported priority is **64-bit Raspberry Pi OS on Raspberry Pi 4 or 5**.
+For these devices, the Python/PySide6 backend is the recommended installation
+path because it installs directly on the Pi and avoids downloading an
+x86_64-only desktop artifact. The installer detects the Pi model, checks the
+reported CPU architecture, installs the Linux display/audio dependencies, and
+can register a per-user kiosk autostart entry.
+
+```bash
+sudo apt update
+sudo apt install -y git python3.11 python3.11-venv python3-pip
+git clone https://github.com/EpicNori/coscar-OS.git
+cd coscar-OS
+python3.11 setup.py --kiosk --autostart --no-run
+./venv/bin/python main.py --kiosk
+```
+
+Use Raspberry Pi OS **64-bit**. A 32-bit OS may not have compatible binary
+wheels for all PySide6 and media dependencies. The native C++ AppImage build
+can also target ARM64 locally; the release workflow currently publishes the
+x86_64 desktop AppImage separately.
+
 #### Supported systems
 
 - Windows 10 or later, 64-bit

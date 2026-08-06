@@ -17,6 +17,13 @@ import shutil
 import time
 import plistlib
 
+
+DEVICE_TREE_MODEL_PATH = "/sys/firmware/devicetree/base/model"
+SUPPORTED_RASPBERRY_PI_MODELS = {
+    "raspberry pi 4": "Raspberry Pi 4",
+    "raspberry pi 5": "Raspberry Pi 5",
+}
+
 # Ensure Unicode output works on Windows (cp1252 can't handle ✓/✗/→)
 if sys.stdout.encoding and sys.stdout.encoding.lower().replace("-", "") != "utf8":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -42,6 +49,23 @@ def run_command(cmd, check=True, shell=False):
     except FileNotFoundError:
         return False
 
+
+def detect_raspberry_model():
+    """Return the Raspberry Pi model name from the device tree, if available."""
+    try:
+        # The device-tree model is exposed as a NUL-terminated byte string.
+        with open(DEVICE_TREE_MODEL_PATH, "rb") as model_file:
+            model = model_file.read().decode("utf-8", errors="replace").strip("\x00\r\n ").lower()
+    except OSError:
+        return None
+
+    for model_id, display_name in SUPPORTED_RASPBERRY_PI_MODELS.items():
+        if model_id in model:
+            return display_name
+    if "raspberry pi" in model:
+        return "Other Raspberry Pi"
+    return None
+
 def detect_platform():
     """Detect the current platform."""
     system = platform.system().lower()
@@ -51,14 +75,26 @@ def detect_platform():
         return "windows"
     elif system == "linux":
         # Check if Raspberry Pi
-        try:
-            with open("/sys/firmware/devicetree/base/model") as f:
-                if "raspberry" in f.read().lower():
-                    return "raspberry"
-        except OSError:
-            pass
+        if detect_raspberry_model():
+            return "raspberry"
         return "linux"
     return "unknown"
+
+
+def report_raspberry_pi_target():
+    """Print the Pi support profile and actionable architecture guidance."""
+    model = detect_raspberry_model()
+    machine = platform.machine().lower()
+    print(f"Hardware: {model or 'Raspberry Pi'} ({machine or 'unknown architecture'})")
+
+    if model in SUPPORTED_RASPBERRY_PI_MODELS.values():
+        print("✓ Primary Raspberry Pi 4/5 installation profile selected")
+    else:
+        print("⚠ This installer is primarily tested on Raspberry Pi 4 and 5")
+
+    if machine not in ("aarch64", "arm64"):
+        print("⚠ Raspberry Pi OS 64-bit is recommended for the PySide6 dependencies")
+        print("  The current OS is not reporting an ARM64 architecture; installation may fail to find compatible wheels.")
 
 def detect_linux_distro():
     """Detect the Linux distribution family."""
@@ -140,7 +176,9 @@ def install_linux_deps():
             "qt6-base", "qt6-multimedia"
         ]
 
-        run_command(["sudo", "pacman", "-S", "--needed", "--noconfirm"] + packages, check=False)
+        if not run_command(["sudo", "pacman", "-S", "--needed", "--noconfirm"] + packages):
+            print("✗ Failed to install Arch Linux system dependencies")
+            sys.exit(1)
 
     elif distro == "fedora":
         # Fedora / RHEL / CentOS packages
@@ -159,7 +197,9 @@ def install_linux_deps():
             "qt6-qtbase", "qt6-qtmultimedia"
         ]
 
-        run_command(["sudo", "dnf", "install", "-y"] + packages, check=False)
+        if not run_command(["sudo", "dnf", "install", "-y"] + packages):
+            print("✗ Failed to install Fedora system dependencies")
+            sys.exit(1)
 
     else:
         # Debian / Ubuntu / Mint / Pop!_OS (default)
@@ -196,10 +236,13 @@ def install_linux_deps():
         ]
 
         # Update package list
-        run_command(["sudo", "apt", "update"])
+        if not run_command(["sudo", "apt", "update"]):
+            print("✗ Failed to update the Debian/Raspberry Pi OS package index")
+            sys.exit(1)
 
-        # Install all packages at once (faster), ignore errors for missing packages
-        run_command(["sudo", "apt", "install", "-y"] + packages, check=False)
+        if not run_command(["sudo", "apt", "install", "-y"] + packages):
+            print("✗ Failed to install Debian/Raspberry Pi OS system dependencies")
+            sys.exit(1)
 
     print("✓ System dependencies installed")
 
@@ -370,7 +413,9 @@ def install_python_deps(venv_path):
     requirements = os.path.join(os.path.dirname(os.path.abspath(__file__)), "requirements.txt")
 
     # Upgrade pip first
-    run_command([pip_path, "install", "--upgrade", "pip"], check=False)
+    if not run_command([pip_path, "install", "--upgrade", "pip"]):
+        print("✗ Failed to upgrade pip inside the virtual environment")
+        sys.exit(1)
 
     # Install requirements
     if run_command([pip_path, "install", "-r", requirements]):
@@ -400,6 +445,8 @@ def main():
     plat = detect_platform()
     wsl = is_wsl()
     print(f"Platform: {plat}{' (WSL)' if wsl else ''}")
+    if plat == "raspberry":
+        report_raspberry_pi_target()
 
     # Check Python version
     check_python_version()

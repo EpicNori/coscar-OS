@@ -8,6 +8,8 @@ are imported but not instantiated, since instantiation would probe for hardware.
 """
 
 import importlib
+import importlib.util
+import os
 
 import pytest
 from PySide6.QtCore import QObject
@@ -109,3 +111,20 @@ def test_dashboard_manager_discovers_presets(qapp, tmp_path):
     assert new_id == "copy-for-test"
     assert dm.deleteDashboard(new_id) is True
     assert dm.deleteDashboard("minimal") is False  # built-in is protected
+
+
+def test_setup_detects_raspberry_pi_4_and_5(tmp_path, monkeypatch):
+    """The installer must identify the two primary Raspberry Pi targets."""
+    setup_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "setup.py"))
+    spec = importlib.util.spec_from_file_location("coscar_setup", setup_path)
+    setup = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(setup)
+
+    model_file = tmp_path / "model"
+    monkeypatch.setattr(setup, "DEVICE_TREE_MODEL_PATH", str(model_file))
+
+    model_file.write_bytes(b"Raspberry Pi 4 Model B Rev 1.5\x00")
+    assert setup.detect_raspberry_model() == "Raspberry Pi 4"
+
+    model_file.write_bytes(b"Raspberry Pi 5 Model B Rev 1.0\x00")
+    assert setup.detect_raspberry_model() == "Raspberry Pi 5"

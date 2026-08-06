@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build an coscar-OS AppImage for x86_64 Linux.
+# Build a coscar-OS AppImage for x86_64 or ARM64 Linux.
 #
 # Layout matches the binary's runtime asset lookup in src/main.cpp:
 #   applicationDirPath() -> AppDir/usr/bin
@@ -8,7 +8,7 @@
 # the lookup and the app exits silently with no window.
 #
 # Inputs:  none (run from the repo root or any cwd; script resolves its own paths)
-# Output:  dist/coscar-OS-${VERSION}-linux-x86_64.AppImage
+# Output:  dist/coscar-OS-${VERSION}-linux-${ARCH}.AppImage
 #
 # Required system packages (Ubuntu 22.04): build-essential cmake ninja-build
 #   pkg-config qt6-base-dev qt6-declarative-dev qt6-multimedia-dev
@@ -31,6 +31,27 @@ VERSION="${VERSION#v}"
 [ -z "$VERSION" ] && VERSION="$(grep -oP 'project\(coscar-OS VERSION \K[0-9.]+' "$REPO_ROOT/CMakeLists.txt" || echo 0.0.0)"
 
 echo "==> coscar-OS AppImage build (version=$VERSION)"
+
+# linuxdeploy publishes separate binaries for each host architecture. Keep
+# the architecture in the artifact name so Pi builds cannot be mistaken for
+# the x86_64 release artifact.
+MACHINE="${CARCH:-$(uname -m)}"
+case "$MACHINE" in
+    x86_64|amd64)
+        DEPLOY_ARCH="x86_64"
+        OUTPUT_ARCH="x86_64"
+        ;;
+    aarch64|arm64)
+        DEPLOY_ARCH="aarch64"
+        OUTPUT_ARCH="arm64"
+        ;;
+    *)
+        echo "ERROR: unsupported Linux architecture: $MACHINE"
+        echo "Supported architectures: x86_64 and aarch64 (Raspberry Pi 4/5 64-bit)."
+        exit 1
+        ;;
+esac
+echo "==> Target architecture: $OUTPUT_ARCH"
 
 # ---- 1. Configure + build ------------------------------------------------
 echo "==> Configuring CMake (Release)"
@@ -114,8 +135,8 @@ chmod +x "$APPDIR/AppRun"
 mkdir -p "$TOOLS_DIR"
 cd "$TOOLS_DIR"
 
-LD_BIN="linuxdeploy-x86_64.AppImage"
-LDQT_BIN="linuxdeploy-plugin-qt-x86_64.AppImage"
+LD_BIN="linuxdeploy-${DEPLOY_ARCH}.AppImage"
+LDQT_BIN="linuxdeploy-plugin-qt-${DEPLOY_ARCH}.AppImage"
 LD_URL="https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/${LD_BIN}"
 LDQT_URL="https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/${LDQT_BIN}"
 
@@ -151,7 +172,7 @@ export QML_SOURCES_PATHS="$APPDIR/usr/frontend"
 # Skip linuxdeploy's auto-AppRun (we wrote our own with the right QML paths).
 export DEPLOY_PLATFORM_THEMES=1
 
-OUTPUT_NAME="coscar-OS-${VERSION}-linux-x86_64.AppImage"
+OUTPUT_NAME="coscar-OS-${VERSION}-linux-${OUTPUT_ARCH}.AppImage"
 
 echo "==> Running linuxdeploy"
 "$TOOLS_DIR/$LD_BIN" \
