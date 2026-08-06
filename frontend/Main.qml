@@ -53,6 +53,51 @@ ApplicationWindow {
     // Screen dimension properties
     property int screenWidth: settingsManager ? settingsManager.screenWidth : 1280
     property int screenHeight: settingsManager ? settingsManager.screenHeight : 720
+    property int displayRotation: settingsManager ? settingsManager.displayRotation : 0
+    readonly property int effectiveDisplayRotation: isAndroid ? 0 : displayRotation
+    readonly property bool isQuarterTurn: effectiveDisplayRotation === 90 || effectiveDisplayRotation === 270
+    readonly property int contentWidth: isQuarterTurn ? height : width
+    readonly property int contentHeight: isQuarterTurn ? width : height
+    property bool applyingScreenGeometry: false
+    property bool screenGeometryInitialized: false
+
+    function updateContentDimensions() {
+        App.Spacing.updateDimensions(contentWidth, contentHeight)
+    }
+
+    function applyScreenGeometry() {
+        if (isAndroid || !settingsManager)
+            return
+
+        var targetWidth = isQuarterTurn ? screenHeight : screenWidth
+        var targetHeight = isQuarterTurn ? screenWidth : screenHeight
+        applyingScreenGeometry = true
+        // Assign even when the value is unchanged so the startup binding is
+        // deliberately replaced; later changes are coordinated here and do
+        // not race through width/height bindings one axis at a time.
+        width = targetWidth
+        height = targetHeight
+        applyingScreenGeometry = false
+        screenGeometryInitialized = true
+        updateContentDimensions()
+    }
+
+    function syncSavedDimensionsFromWindow() {
+        if (!screenGeometryInitialized || applyingScreenGeometry || !settingsManager || isAndroid)
+            return
+
+        var logicalWidth = isQuarterTurn ? height : width
+        var logicalHeight = isQuarterTurn ? width : height
+        if (logicalWidth > 0 && logicalWidth >= minimumWidth
+                && logicalWidth !== settingsManager.screenWidth) {
+            settingsManager.save_screen_width(logicalWidth)
+        }
+        if (logicalHeight > 0 && logicalHeight >= minimumHeight
+                && logicalHeight !== settingsManager.screenHeight) {
+            settingsManager.save_screen_height(logicalHeight)
+        }
+        updateContentDimensions()
+    }
 
     // Bottom bar orientation property
     property bool isVerticalLayout: settingsManager ?
@@ -109,8 +154,8 @@ ApplicationWindow {
     // width/height here overrides that pillarboxing, causing content to
     // intrude into the cutout / rounded-corner area. Leaving the bindings
     // unset on Android lets the OS own the sizing.
-    width: isAndroid ? undefined : screenWidth
-    height: isAndroid ? undefined : screenHeight
+    width: isAndroid ? undefined : (isQuarterTurn ? screenHeight : screenWidth)
+    height: isAndroid ? undefined : (isQuarterTurn ? screenWidth : screenHeight)
 
     // Handle window close (force close / X button)
     onClosing: function(close) {
@@ -168,13 +213,11 @@ ApplicationWindow {
             // Load dimensions (desktop only — mobile window is fullscreen and
             // already bound to Screen.width/height above; overwriting from
             // settings would shrink the render surface).
-            if (!isAndroid) {
-                width = settingsManager.screenWidth
-                height = settingsManager.screenHeight
-            }
+            if (!isAndroid)
+                applyScreenGeometry()
 
             // Initialize spacing
-            App.Spacing.updateDimensions(width, height)
+            updateContentDimensions()
 
             // Set auto-scale from screen detection
             if (typeof screenAutoScale !== "undefined") {
@@ -253,19 +296,13 @@ ApplicationWindow {
 
     // Window resize handlers
     onWidthChanged: {
-        if (settingsManager && width > 0 && width >= minimumWidth) {
-            settingsManager.save_screen_width(width)
-            screenWidth = width
-            App.Spacing.updateDimensions(width, height)
-        }
+        if (width > 0 && width >= minimumWidth)
+            syncSavedDimensionsFromWindow()
     }
 
     onHeightChanged: {
-        if (settingsManager && height > 0 && height >= minimumHeight) {
-            settingsManager.save_screen_height(height)
-            screenHeight = height
-            App.Spacing.updateDimensions(width, height)
-        }
+        if (height > 0 && height >= minimumHeight)
+            syncSavedDimensionsFromWindow()
     }
 
     // Settings manager connections
@@ -274,15 +311,19 @@ ApplicationWindow {
         
         function onScreenWidthChanged() {
             if (settingsManager && !isAndroid) {
-                width = settingsManager.screenWidth
-                App.Spacing.updateDimensions(width, height)
+                applyScreenGeometry()
             }
         }
 
         function onScreenHeightChanged() {
             if (settingsManager && !isAndroid) {
-                height = settingsManager.screenHeight
-                App.Spacing.updateDimensions(width, height)
+                applyScreenGeometry()
+            }
+        }
+
+        function onDisplayRotationChanged() {
+            if (settingsManager && !isAndroid) {
+                applyScreenGeometry()
             }
         }
         
@@ -386,7 +427,7 @@ ApplicationWindow {
     // Remote navigation for perf testing (called from Python command server)
     function navigateTo(pageName) {
         var pageMap = {
-            "MainMenu.qml":         { file: "MainMenu.qml",         props: { stackView: stackView, windowWidth: mainWindow.width, windowHeight: mainWindow.height } },
+            "MainMenu.qml":         { file: "MainMenu.qml",         props: { stackView: stackView, windowWidth: mainWindow.contentWidth, windowHeight: mainWindow.contentHeight } },
             "MediaRoom.qml":        { file: "MediaRoom.qml",        props: { stackView: stackView } },
             "MediaPlayer.qml":      { file: "MediaPlayer.qml",      props: { stackView: stackView, mainWindow: mainWindow } },
             "OBDHome.qml":          { file: "OBDHome.qml",          props: { stackView: stackView, mainWindow: mainWindow } },
@@ -461,7 +502,11 @@ ApplicationWindow {
     // Main layout container
     Item {
         id: mainContainer
-        anchors.fill: parent
+        anchors.centerIn: parent
+        width: mainWindow.contentWidth
+        height: mainWindow.contentHeight
+        rotation: mainWindow.effectiveDisplayRotation
+        transformOrigin: Item.Center
 
         // Main stack view with adaptive anchoring
         StackView {
@@ -483,8 +528,8 @@ ApplicationWindow {
 
             initialItem: MainMenu {
                 stackView: stackView
-                windowWidth: mainWindow.width
-                windowHeight: mainWindow.height
+                windowWidth: mainWindow.contentWidth
+                windowHeight: mainWindow.contentHeight
             }
 
             // Disable transitions for better performance
@@ -877,13 +922,11 @@ ApplicationWindow {
         if (settingsManager) {
             if (newWidth >= minimumWidth) {
                 settingsManager.save_screen_width(newWidth)
-                width = newWidth
             }
             if (newHeight >= minimumHeight) {
                 settingsManager.save_screen_height(newHeight)
-                height = newHeight
             }
-            App.Spacing.updateDimensions(width, height)
+            applyScreenGeometry()
         }
     }
 

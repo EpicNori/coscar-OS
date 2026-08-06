@@ -135,7 +135,17 @@ def extract_archive(archive_path: Path, dest_dir: Path) -> None:
 def main():
     """Main entry point."""
     system = platform.system()
-    print(f"Platform: {system}")
+    machine = platform.machine().lower()
+    print(f"Platform: {system} ({machine})")
+
+    # The bundled Linux archive is x86_64-only. Never download it on a Pi:
+    # use the native Raspberry Pi OS packages so scrcpy and adb match ARM64.
+    if system == "Linux" and machine in ("aarch64", "arm64"):
+        print("\nARM64 Linux detected (Raspberry Pi 4/5 profile).")
+        print("Install the native packages instead:")
+        print("    sudo apt install scrcpy adb")
+        print("coscar-OS will find /usr/bin/scrcpy and /usr/bin/adb automatically.")
+        return
 
     if system == "Darwin":
         print("\nmacOS detected.")

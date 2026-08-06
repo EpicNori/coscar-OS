@@ -45,6 +45,16 @@ The project is a redesign and continuation of [RobDeGeorge/OCTAVE](https://githu
 - Keep the exit action clearly labeled and touch-sized. It is a functional
   control, not a decorative glass card.
 
+## Display rotation
+
+- The complete logical dashboard canvas supports 0°, 90°, 180°, and 270°
+  rotation for mounted touchscreens, especially portrait Pi displays.
+- Keep rotation in Settings > Display > Window as large, touch-friendly chips.
+- Preserve the logical screen dimensions while swapping the physical window
+  dimensions for quarter-turn rotations, so layouts do not reflow unexpectedly.
+- Use the same degree labels and persisted `displayRotation` value in both the
+  Python and C++ backends.
+
 ## Wi-Fi update surface
 
 - The update control lives in Settings > Device > Home Wi-Fi Update.

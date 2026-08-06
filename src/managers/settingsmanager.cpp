@@ -102,6 +102,8 @@ QJsonObject SettingsManager::buildSettingsRegistry()
     reg[QStringLiteral("ui_scale")]                   = entry("uiScale", "UI Scaling", "displaySettings", "slider", "save_ui_scale", sliderParams(0.5, 2.0, 0.05));
     reg[QStringLiteral("theme_setting")]              = entry("themeSetting", "Theme", "displaySettings", "chips", "save_theme_setting", chipSource("themeList"));
     reg[QStringLiteral("show_clock")]                 = entry("showClock", "Show Clock", "displaySettings", "toggle", "save_show_clock");
+    reg[QStringLiteral("display_rotation")]            = entry("displayRotation", "Display Rotation", "displaySettings", "chips", "save_display_rotation",
+        chipParams({QStringLiteral("0°"), QStringLiteral("90°"), QStringLiteral("180°"), QStringLiteral("270°")}));
     reg[QStringLiteral("bottom_bar_media_controls")]  = entry("showBottomBarMediaControls", "Nav Bar Media Controls", "displaySettings", "toggle", "save_show_bottom_bar_media_controls");
     reg[QStringLiteral("background_blur_radius")]     = entry("backgroundBlurRadius", "Album Art Blur", "mediaSettings", "slider", "save_background_blur_radius", sliderParams(0, 100, 1));
     reg[QStringLiteral("color_transition_ms")]        = entry("colorTransitionMs", "Theme Transition Speed", "displaySettings", "slider", "save_color_transition_ms", sliderParams(0, 5000, 100));
@@ -130,6 +132,7 @@ QJsonObject SettingsManager::buildDefaultSettings() const
     d[QStringLiteral("backgroundGrid")]       = QStringLiteral("4x4");
     d[QStringLiteral("screenWidth")]          = 1280;
     d[QStringLiteral("screenHeight")]         = 720;
+    d[QStringLiteral("displayRotation")]      = 0;
     d[QStringLiteral("backgroundBlurRadius")] = 40;
     d[QStringLiteral("uiScale")]              = 1.0;
     d[QStringLiteral("colorTransitionMs")]    = 1000;
@@ -368,6 +371,11 @@ SettingsManager::SettingsManager(QObject *parent)
     m_backgroundGrid    = s(QStringLiteral("backgroundGrid")).toString();
     m_screenWidth       = s(QStringLiteral("screenWidth")).toInt();
     m_screenHeight      = s(QStringLiteral("screenHeight")).toInt();
+    m_displayRotation   = s(QStringLiteral("displayRotation")).toInt();
+    if (m_displayRotation != 0 && m_displayRotation != 90
+        && m_displayRotation != 180 && m_displayRotation != 270) {
+        m_displayRotation = 0;
+    }
     m_backgroundBlurRadius = s(QStringLiteral("backgroundBlurRadius")).toInt();
     m_uiScale           = static_cast<float>(s(QStringLiteral("uiScale")).toDouble());
     m_colorTransitionMs = s(QStringLiteral("colorTransitionMs")).toInt();
@@ -751,6 +759,7 @@ int     SettingsManager::clockSize() const         { return m_clockSize; }
 QString SettingsManager::backgroundGrid() const    { return m_backgroundGrid; }
 int     SettingsManager::screenWidth() const       { return m_screenWidth; }
 int     SettingsManager::screenHeight() const      { return m_screenHeight; }
+int     SettingsManager::displayRotation() const   { return m_displayRotation; }
 int     SettingsManager::backgroundBlurRadius() const { return m_backgroundBlurRadius; }
 QString SettingsManager::bottomBarOrientation() const  { return m_bottomBarOrientation; }
 bool    SettingsManager::showBottomBarMediaControls() const { return m_showBottomBarMediaControls; }
@@ -952,6 +961,17 @@ void SettingsManager::save_screen_height(int height)
     m_screenHeight = height;
     updateSetting(QStringLiteral("screenHeight"), height);
     emit screenHeightChanged(height);
+}
+
+void SettingsManager::save_display_rotation(int rotation)
+{
+    if (rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270)
+        return;
+    if (m_displayRotation == rotation)
+        return;
+    m_displayRotation = rotation;
+    updateSetting(QStringLiteral("displayRotation"), rotation);
+    emit displayRotationChanged(rotation);
 }
 
 void SettingsManager::save_background_blur_radius(int radius)
@@ -1921,6 +1941,7 @@ QString SettingsManager::get_pinned_settings_metadata()
         else if (attr == QStringLiteral("imu_enabled"))          val = QVariant(m_imuEnabled);
         else if (attr == QStringLiteral("gesture_sensor_enabled")) val = QVariant(m_gestureSensorEnabled);
         else if (attr == QStringLiteral("settings_layout_style")) val = QVariant(m_settingsLayoutStyle);
+        else if (attr == QStringLiteral("display_rotation"))      val = QVariant(m_displayRotation);
         else {
             // Fallback: read from settings file
             val = m_settings.value(key).toVariant();
@@ -1962,6 +1983,7 @@ QString SettingsManager::keyToAttr(const QString &key) const
         {QStringLiteral("imuEnabled"),                  QStringLiteral("imu_enabled")},
         {QStringLiteral("gestureSensorEnabled"),        QStringLiteral("gesture_sensor_enabled")},
         {QStringLiteral("settingsLayoutStyle"),         QStringLiteral("settings_layout_style")},
+        {QStringLiteral("displayRotation"),             QStringLiteral("display_rotation")},
     };
     return map.value(key, key);
 }
@@ -2005,6 +2027,9 @@ void SettingsManager::reset_to_defaults()
 
     m_screenHeight = m_defaultSettings.value(QStringLiteral("screenHeight")).toInt();
     emit screenHeightChanged(m_screenHeight);
+
+    m_displayRotation = m_defaultSettings.value(QStringLiteral("displayRotation")).toInt();
+    emit displayRotationChanged(m_displayRotation);
 
     m_backgroundBlurRadius = m_defaultSettings.value(QStringLiteral("backgroundBlurRadius")).toInt();
     emit backgroundBlurRadiusChanged(m_backgroundBlurRadius);

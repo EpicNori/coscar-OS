@@ -11,6 +11,8 @@ from typing import List
 from backend.logging_config import get_logger
 logger = get_logger(__name__)
 
+DISPLAY_ROTATION_VALUES = (0, 90, 180, 270)
+
 # Settings registry — maps setting IDs to metadata for dynamic Quick Panel rendering
 SETTINGS_REGISTRY = {
     "startup_volume": {
@@ -100,6 +102,11 @@ SETTINGS_REGISTRY = {
         "key": "showClock", "label": "Show Clock", "category": "displaySettings",
         "controlType": "toggle", "saveSlot": "save_show_clock"
     },
+    "display_rotation": {
+        "key": "displayRotation", "label": "Display Rotation", "category": "displaySettings",
+        "controlType": "chips", "saveSlot": "save_display_rotation",
+        "params": {"options": ["0°", "90°", "180°", "270°"]}
+    },
     "bottom_bar_media_controls": {
         "key": "showBottomBarMediaControls", "label": "Nav Bar Media Controls", "category": "displaySettings",
         "controlType": "toggle", "saveSlot": "save_show_bottom_bar_media_controls"
@@ -169,6 +176,7 @@ class SettingsManager(QObject):
     backgroundGridChanged = Signal(str)
     screenWidthChanged = Signal(int)
     screenHeightChanged = Signal(int)
+    displayRotationChanged = Signal(int)
     backgroundBlurRadiusChanged = Signal(int)
     uiScaleChanged = Signal(float)
     colorTransitionMsChanged = Signal(int)
@@ -251,6 +259,14 @@ class SettingsManager(QObject):
     # Pinned settings signals
     pinnedSettingsChanged = Signal()
 
+    @staticmethod
+    def _normalize_display_rotation(value):
+        try:
+            value = int(value)
+        except (TypeError, ValueError):
+            return 0
+        return value if value in DISPLAY_ROTATION_VALUES else 0
+
     def __init__(self):
         self._album_art_colors = ""  # Loaded from settings below; persisted across restarts
         super().__init__()
@@ -272,6 +288,7 @@ class SettingsManager(QObject):
             "backgroundGrid": "4x4",
             "screenWidth": 1280,
             "screenHeight": 720,
+            "displayRotation": 0,
             "backgroundBlurRadius": 40,
             "uiScale": 1.0,
             "colorTransitionMs": 1000,
@@ -503,6 +520,9 @@ class SettingsManager(QObject):
         self._background_grid = self._settings.get("backgroundGrid", self._default_settings["backgroundGrid"])
         self._screen_width = self._settings.get("screenWidth", self._default_settings["screenWidth"])
         self._screen_height = self._settings.get("screenHeight", self._default_settings["screenHeight"])
+        self._display_rotation = self._normalize_display_rotation(
+            self._settings.get("displayRotation", self._default_settings["displayRotation"])
+        )
         self._background_blur_radius = self._settings.get("backgroundBlurRadius", self._default_settings["backgroundBlurRadius"])
         self._ui_scale = self._settings.get("uiScale", self._default_settings["uiScale"])
         self._color_transition_ms = self._settings.get("colorTransitionMs", self._default_settings["colorTransitionMs"])
@@ -861,6 +881,10 @@ class SettingsManager(QObject):
     @Property(int, notify=screenHeightChanged)
     def screenHeight(self):
         return self._screen_height
+
+    @Property(int, notify=displayRotationChanged)
+    def displayRotation(self):
+        return self._display_rotation
     
     @Property(str, notify=obdBluetoothPortChanged)
     def obdBluetoothPort(self):
@@ -987,6 +1011,19 @@ class SettingsManager(QObject):
     def save_screen_height(self, height):
         self._screen_height = height
         self.update_setting("screenHeight", height, self.screenHeightChanged)
+
+    @Slot(int)
+    def save_display_rotation(self, rotation):
+        try:
+            rotation = int(rotation)
+        except (TypeError, ValueError):
+            return
+        if rotation not in DISPLAY_ROTATION_VALUES:
+            return
+        if rotation == self._display_rotation:
+            return
+        self._display_rotation = rotation
+        self.update_setting("displayRotation", rotation, self.displayRotationChanged)
     
     # New OBD save methods
     @Slot(str)
@@ -2073,6 +2110,7 @@ class SettingsManager(QObject):
             "imuEnabled": "imu_enabled",
             "gestureSensorEnabled": "gesture_sensor_enabled",
             "settingsLayoutStyle": "settings_layout_style",
+            "displayRotation": "display_rotation",
         }
         return attr_map.get(key, key)
 
@@ -2181,6 +2219,9 @@ class SettingsManager(QObject):
         
         self._screen_height = self._default_settings["screenHeight"]
         self.screenHeightChanged.emit(self._screen_height)
+
+        self._display_rotation = self._default_settings["displayRotation"]
+        self.displayRotationChanged.emit(self._display_rotation)
         
         self._background_blur_radius = self._default_settings["backgroundBlurRadius"]
         self.backgroundBlurRadiusChanged.emit(self._background_blur_radius)

@@ -57,6 +57,15 @@ python3.11 setup.py --kiosk --autostart --no-run
 ./venv/bin/python main.py --kiosk
 ```
 
+For optional phone mirroring on a Pi, install the native ARM64 packages:
+
+```bash
+sudo apt install -y scrcpy adb
+```
+
+Do not use the bundled x86_64 scrcpy archive on ARM64; the downloader detects
+Pi architecture and directs you to the native packages instead.
+
 The setup script identifies the Pi model, installs the Qt display/audio
 libraries, creates a local virtual environment, and keeps Python packages out
 of the system interpreter. Raspberry Pi OS 64-bit is strongly recommended;

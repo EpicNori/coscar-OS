@@ -38,6 +38,7 @@ class SettingsManager : public QObject
     Q_PROPERTY(QString backgroundGrid READ backgroundGrid NOTIFY backgroundGridChanged)
     Q_PROPERTY(int screenWidth READ screenWidth NOTIFY screenWidthChanged)
     Q_PROPERTY(int screenHeight READ screenHeight NOTIFY screenHeightChanged)
+    Q_PROPERTY(int displayRotation READ displayRotation NOTIFY displayRotationChanged)
     Q_PROPERTY(int backgroundBlurRadius READ backgroundBlurRadius NOTIFY backgroundBlurRadiusChanged)
     Q_PROPERTY(QString bottomBarOrientation READ bottomBarOrientation NOTIFY bottomBarOrientationChanged)
     Q_PROPERTY(bool showBottomBarMediaControls READ showBottomBarMediaControls NOTIFY showBottomBarMediaControlsChanged)
@@ -140,6 +141,7 @@ public:
     QString backgroundGrid() const;
     int screenWidth() const;
     int screenHeight() const;
+    int displayRotation() const;
     int backgroundBlurRadius() const;
     QString bottomBarOrientation() const;
     bool showBottomBarMediaControls() const;
@@ -237,6 +239,7 @@ signals:
     void backgroundGridChanged(const QString &value);
     void screenWidthChanged(int value);
     void screenHeightChanged(int value);
+    void displayRotationChanged(int value);
     void backgroundBlurRadiusChanged(int value);
     void bottomBarOrientationChanged(const QString &value);
     void showBottomBarMediaControlsChanged(bool value);
@@ -347,6 +350,7 @@ public slots:
     void save_background_grid(const QString &grid);
     void save_screen_width(int width);
     void save_screen_height(int height);
+    void save_display_rotation(int rotation);
     void save_background_blur_radius(int radius);
     void save_bottom_bar_orientation(const QString &orientation);
     void save_show_bottom_bar_media_controls(bool show);
@@ -559,6 +563,7 @@ private:
     QString m_backgroundGrid;
     int m_screenWidth = 1280;
     int m_screenHeight = 720;
+    int m_displayRotation = 0;
     int m_backgroundBlurRadius = 40;
     float m_uiScale = 1.0f;
     int m_colorTransitionMs = 1000;

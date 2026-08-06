@@ -54,7 +54,9 @@ app = QApplication(sys.argv)
 screen = app.primaryScreen()
 if screen:
     available = screen.availableSize()
-    auto_scale = available.height() / 720.0
+    # Use the shorter axis so a portrait Pi touchscreen gets the same scale
+    # as the equivalent landscape display before the QML canvas is rotated.
+    auto_scale = min(available.width(), available.height()) / 720.0
     auto_scale = max(0.4, min(3.0, auto_scale))  # Clamp to [0.4, 3.0]
     logger.info(f"Screen auto-detection: {available.width()}x{available.height()}, autoScale={auto_scale:.2f}")
 else:

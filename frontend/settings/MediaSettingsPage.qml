@@ -368,8 +368,8 @@ Flickable {
             // PiP sized to the running window's aspect so the preview reads
             // as a faithful miniature. Caps at 40% of dashboard height to
             // leave the two scroll columns plenty of room.
-            readonly property real windowAspect: (mainWindow && mainWindow.height > 0)
-                ? (mainWindow.width / mainWindow.height) : (1280.0 / 720.0)
+            readonly property real windowAspect: (mainWindow && mainWindow.contentHeight > 0)
+                ? (mainWindow.contentWidth / mainWindow.contentHeight) : (1280.0 / 720.0)
             readonly property real pipMaxHeight: Math.max(pageRoot.dp(160), dashboard.height * 0.40)
             readonly property real pipNaturalWidth: pipMaxHeight * windowAspect
             readonly property int leftColMin: pageRoot.dp(280)

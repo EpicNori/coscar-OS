@@ -114,8 +114,8 @@ Item {
     // L-shape geometry. PiP locks into the top-right corner at window aspect;
     // the left panel runs the full height; the bottom panel fills under the
     // PiP, between the left panel and the right edge.
-    readonly property real windowAspect: (mainWindow && mainWindow.height > 0)
-        ? (mainWindow.width / mainWindow.height) : (1280.0 / 720.0)
+    readonly property real windowAspect: (mainWindow && mainWindow.contentHeight > 0)
+        ? (mainWindow.contentWidth / mainWindow.contentHeight) : (1280.0 / 720.0)
 
     // Aspect-correct PiP cap — 50% of the dashboard height, never under 180dp.
     // The left panel takes whatever horizontal slack the PiP doesn't claim, so
@@ -664,8 +664,8 @@ Item {
             anchors.right: parent.right
             width: studio.pipFitWidth
             height: studio.pipFitHeight
-            designWidth: studio.mainWindow ? studio.mainWindow.width : 1280
-            designHeight: studio.mainWindow ? studio.mainWindow.height : 720
+            designWidth: studio.mainWindow ? studio.mainWindow.contentWidth : 1280
+            designHeight: studio.mainWindow ? studio.mainWindow.contentHeight : 720
         }
 
         // ── BACKGROUND strip directly under the PiP ───────────────────

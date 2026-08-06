@@ -252,7 +252,7 @@ Flickable {
                     SettingsTextField {
                         id: screenWidth
                         Layout.preferredWidth: pageRoot.dp(120)
-                        text: pageRoot.mainWindow ? pageRoot.mainWindow.width : ""
+                        text: settingsManager ? settingsManager.screenWidth : ""
                         horizontalAlignment: TextInput.AlignHCenter
                         validator: IntValidator {
                             bottom: 400
@@ -263,8 +263,8 @@ Flickable {
                             if (text && settingsManager) {
                                 const width = parseInt(text)
                                 settingsManager.save_screen_width(width)
-                                pageRoot.mainWindow.width = width
-                                App.Spacing.updateDimensions(width, pageRoot.mainWindow.height)
+                                if (pageRoot.mainWindow && pageRoot.mainWindow.applyScreenGeometry)
+                                    pageRoot.mainWindow.applyScreenGeometry()
                             }
                         }
 
@@ -272,14 +272,10 @@ Flickable {
                         onActiveFocusChanged: if (!activeFocus) applyWidth()
 
                         Connections {
-                            target: pageRoot.mainWindow
-                            function onWidthChanged() {
+                            target: settingsManager
+                            function onScreenWidthChanged() {
                                 if (!screenWidth.activeFocus) {
-                                    screenWidth.text = pageRoot.mainWindow.width
-                                    if (settingsManager) {
-                                        settingsManager.save_screen_width(pageRoot.mainWindow.width)
-                                    }
-                                    App.Spacing.updateDimensions(pageRoot.mainWindow.width, pageRoot.mainWindow.height)
+                                    screenWidth.text = settingsManager.screenWidth
                                 }
                             }
                         }
@@ -295,7 +291,7 @@ Flickable {
                     SettingsTextField {
                         id: screenHeight
                         Layout.preferredWidth: pageRoot.dp(120)
-                        text: pageRoot.mainWindow ? pageRoot.mainWindow.height : ""
+                        text: settingsManager ? settingsManager.screenHeight : ""
                         horizontalAlignment: TextInput.AlignHCenter
                         validator: IntValidator {
                             bottom: 300
@@ -306,8 +302,8 @@ Flickable {
                             if (text && settingsManager) {
                                 const height = parseInt(text)
                                 settingsManager.save_screen_height(height)
-                                pageRoot.mainWindow.height = height
-                                App.Spacing.updateDimensions(pageRoot.mainWindow.width, height)
+                                if (pageRoot.mainWindow && pageRoot.mainWindow.applyScreenGeometry)
+                                    pageRoot.mainWindow.applyScreenGeometry()
                             }
                         }
 
@@ -315,14 +311,10 @@ Flickable {
                         onActiveFocusChanged: if (!activeFocus) applyHeight()
 
                         Connections {
-                            target: pageRoot.mainWindow
-                            function onHeightChanged() {
+                            target: settingsManager
+                            function onScreenHeightChanged() {
                                 if (!screenHeight.activeFocus) {
-                                    screenHeight.text = pageRoot.mainWindow.height
-                                    if (settingsManager) {
-                                        settingsManager.save_screen_height(pageRoot.mainWindow.height)
-                                    }
-                                    App.Spacing.updateDimensions(pageRoot.mainWindow.width, pageRoot.mainWindow.height)
+                                    screenHeight.text = settingsManager.screenHeight
                                 }
                             }
                         }
@@ -370,6 +362,24 @@ Flickable {
                     }
 
                     Item { Layout.fillWidth: true } // Spacer
+                }
+            }
+
+            SettingCategory {
+                visible: !isAndroid
+                title: "Screen Rotation"
+                description: "Rotate the complete interface for portrait or inverted touchscreens."
+
+                SettingsChips {
+                    id: displayRotationChips
+                    Layout.fillWidth: true
+                    options: ["0°", "90°", "180°", "270°"]
+                    currentValue: settingsManager ? String(settingsManager.displayRotation) + "°" : "0°"
+
+                    onSelected: function(value) {
+                        if (settingsManager)
+                            settingsManager.save_display_rotation(parseInt(value))
+                    }
                 }
             }
         }

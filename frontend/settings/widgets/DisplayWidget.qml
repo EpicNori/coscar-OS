@@ -26,6 +26,11 @@ Item {
         }
 
         WidgetPill {
+            label: "Rotation"
+            value: settingsManager ? settingsManager.displayRotation + "°" : "0°"
+        }
+
+        WidgetPill {
             label: "Font"
             value: {
                 var f = settingsManager ? (settingsManager.fontSetting || "System Default") : "System Default"

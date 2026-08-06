@@ -113,6 +113,20 @@ def test_dashboard_manager_discovers_presets(qapp, tmp_path):
     assert dm.deleteDashboard("minimal") is False  # built-in is protected
 
 
+def test_display_rotation_settings_are_validated_and_persisted(qapp, tmp_path, monkeypatch):
+    """Display rotation accepts only quarter turns and persists valid values."""
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+
+    from backend.settings_manager import SettingsManager
+
+    manager = SettingsManager()
+    manager.save_display_rotation(90)
+    assert manager.displayRotation == 90
+
+    manager.save_display_rotation(45)
+    assert manager.displayRotation == 90
+
+
 def test_setup_detects_raspberry_pi_4_and_5(tmp_path, monkeypatch):
     """The installer must identify the two primary Raspberry Pi targets."""
     setup_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "setup.py"))

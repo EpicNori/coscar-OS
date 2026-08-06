@@ -119,6 +119,9 @@ python3.11 setup.py --kiosk --autostart --no-run
 ./venv/bin/python main.py --kiosk
 ```
 
+Phone mirroring is optional. On a Pi, install the ARM64-native packages with
+`sudo apt install -y scrcpy adb`; the project will detect them from `/usr/bin`.
+
 Use Raspberry Pi OS **64-bit**. A 32-bit OS may not have compatible binary
 wheels for all PySide6 and media dependencies. The native C++ AppImage build
 can also target ARM64 locally; the release workflow currently publishes the
