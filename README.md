@@ -149,18 +149,19 @@ Do not run the installer as root. Run it as your normal user and allow the Linux
 
 These commands download the current `main` source archive directly from GitHub,
 so Git does not need to be installed first. Python 3.10 or 3.11 must already be
-available. The kiosk variant starts fullscreen and enables per-user autostart.
+available. The kiosk variant enables per-user autostart and starts fullscreen
+at the next desktop login.
 
 **Windows PowerShell**
 
 ```powershell
-$ErrorActionPreference='Stop'; $repo='coscar-OS'; if (!(Test-Path -LiteralPath (Join-Path $repo 'setup.py'))) { if (Test-Path -LiteralPath $repo) { throw "The folder coscar-OS already exists but is not a coscar-OS checkout." }; $zip=Join-Path $env:TEMP 'coscar-OS-main.zip'; $extract=Join-Path $env:TEMP 'coscar-OS-download'; Remove-Item -LiteralPath $extract -Recurse -Force -ErrorAction SilentlyContinue; Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/EpicNori/coscar-OS/archive/refs/heads/main.zip' -OutFile $zip; Expand-Archive -LiteralPath $zip -DestinationPath $extract -Force; Move-Item -LiteralPath (Join-Path $extract 'coscar-OS-main') -Destination $repo; Remove-Item -LiteralPath $zip,$extract -Recurse -Force }; Set-Location $repo; py -3.11 setup.py --kiosk --autostart
+$ErrorActionPreference='Stop'; $repo=if (Test-Path -LiteralPath 'setup.py') { (Get-Location).Path } else { Join-Path (Get-Location).Path 'coscar-OS' }; if (!(Test-Path -LiteralPath (Join-Path $repo 'setup.py'))) { if (Test-Path -LiteralPath $repo) { throw "The folder coscar-OS already exists but is not a coscar-OS checkout." }; $tmp=Join-Path $env:TEMP ('coscar-OS-install-' + [guid]::NewGuid().ToString('N')); New-Item -ItemType Directory -Path $tmp | Out-Null; try { $zip=Join-Path $tmp 'main.zip'; Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/EpicNori/coscar-OS/archive/refs/heads/main.zip' -OutFile $zip; Expand-Archive -LiteralPath $zip -DestinationPath $tmp -Force; $source=Join-Path $tmp 'coscar-OS-main'; if (!(Test-Path -LiteralPath (Join-Path $source 'setup.py'))) { throw 'The downloaded archive does not contain setup.py.' }; Move-Item -LiteralPath $source -Destination $repo } finally { if (Test-Path -LiteralPath $tmp) { Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue } } }; Set-Location $repo; py -3.11 setup.py --kiosk --autostart --no-run
 ```
 
 **macOS / Linux**
 
 ```bash
-set -e; [ -f coscar-OS/setup.py ] || { test ! -e coscar-OS || { echo 'The folder coscar-OS already exists but is not a coscar-OS checkout.' >&2; exit 1; }; tmp="$(mktemp -d)"; curl -fL 'https://github.com/EpicNori/coscar-OS/archive/refs/heads/main.tar.gz' | tar -xz -C "$tmp"; mv "$tmp/coscar-OS-main" coscar-OS; rm -rf "$tmp"; }; cd coscar-OS && python3.11 setup.py --kiosk --autostart
+set -euo pipefail; if [ -f setup.py ]; then repo="$(pwd)"; elif [ -f coscar-OS/setup.py ]; then repo="$(pwd)/coscar-OS"; else test ! -e coscar-OS || { echo 'The folder coscar-OS already exists but is not a coscar-OS checkout.' >&2; exit 1; }; tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT; curl -fL --retry 3 'https://github.com/EpicNori/coscar-OS/archive/refs/heads/main.tar.gz' | tar -xz -C "$tmp"; test -f "$tmp/coscar-OS-main/setup.py"; mv "$tmp/coscar-OS-main" coscar-OS; repo="$(pwd)/coscar-OS"; fi; cd "$repo" && python3.11 setup.py --kiosk --autostart --no-run
 ```
 
 For a normal windowed install, remove `--kiosk --autostart` from the final setup command.
