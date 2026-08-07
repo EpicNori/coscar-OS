@@ -52,16 +52,22 @@ It's not really a product. It's more like vanilla Minecraft — I'll keep the ba
 
 ## How It Compares
 
-| | coscar-OS | Crankshaft | OpenAuto Pro | Stock Android Auto |
-|---|---|---|---|---|
-| Open source | yes (MIT) | yes | partial | no |
-| Runs without a phone | yes | no (AA projection) | no (AA projection) | no |
-| Built-in OBD-II + custom gauges | yes | no | limited | no |
-| Themable / forkable UI | fully (QML) | limited | limited | no |
-| Local music + Spotify + downloads | yes | via phone | via phone | via phone |
-| Desktop dev loop | yes (Win/macOS/Linux) | Pi only | Pi only | n/a |
+| Feature | coscar-OS | [Crankshaft](https://github.com/opencardev/crankshaft) | OpenAuto Pro | [LIVI](https://github.com/f-io/LIVI) | [AGL UCB](https://www.automotivelinux.org/software/unified-code-base/) | [Android Automotive OS](https://source.android.com/docs/automotive/start/what_automotive) | [Android Auto](https://developer.android.com/training/cars/platforms/android-auto) | [Apple CarPlay](https://www.apple.com/ios/carplay/) |
+|---|---|---|---|---|---|---|---|---|
+| Main role | Standalone DIY carputer | Raspberry Pi Android Auto head unit | Raspberry Pi Android Auto head unit | Cross-platform phone-projection head unit | Production-oriented automotive Linux platform | Embedded automotive operating system | Android phone projection | iPhone projection |
+| Open source | yes (MIT) | yes (GPL-3.0) | no (commercial) | yes (GPL-3.0-or-later) | yes | AOSP, with optional proprietary Google services | no | no |
+| Runs without a phone | yes | no (AA projection) | no (AA projection) | no (phone projection) | yes* | yes | no | no |
+| Built-in OBD-II + custom gauges | yes | no | limited | no | vehicle-bus integration** | OEM integration** | no | no |
+| Themable / forkable UI | fully (QML) | limited | limited | source-available | OEM-customizable** | OEM-customizable** | no | no |
+| Local music + Spotify + downloads | yes | via phone | via apps / phone | via phone | depends on image | via apps | via phone | via phone |
+| DIY install readiness | yes | yes | yes | yes | platform build required | OEM / embedded build | compatible car or stereo | compatible car or stereo |
+| Typical hardware | Win/macOS/Linux, Raspberry Pi, Android | Raspberry Pi | Raspberry Pi | Linux/macOS, Raspberry Pi 4/5 | supported boards + QEMU | supported automotive hardware | compatible car or aftermarket stereo | compatible car or aftermarket stereo |
 
-If you want a head unit that runs **on its own** instead of a screen that mirrors your phone, coscar-OS is the one.
+\* AGL and Android Automotive OS run on the vehicle device, but they are platform projects rather than drop-in Raspberry Pi head-unit images.
+
+\*\* Vehicle-bus or OEM integration is not the same as coscar-OS's ready-to-use ELM327 OBD-II dashboards.
+
+For a head unit that runs **on its own**, coscar-OS, AGL, and Android Automotive OS are the standalone options here. Crankshaft, OpenAuto Pro, LIVI, Android Auto, and Apple CarPlay are primarily phone-projection solutions.
 
 ## See It
 
